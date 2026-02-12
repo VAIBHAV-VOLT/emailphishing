@@ -136,6 +136,22 @@ def calculate_security_check_score(urls):
     return score, spf_results, dmarc_results, dkim_results
 
 
+def calculate_transformer_score(email_body):
+    """
+    Calculate phishing score using Hugging Face transformer model.
+    
+    :param email_body: email body text from analyzer
+    :return: score (0-10)
+    """
+    if not email_body:
+        return 0
+    
+    from huggingface_analyzer import get_transformer_score
+    
+    score = get_transformer_score(email_body)
+    return min(score, 10)
+
+
 def calculate_url_analyzer_score(email_body):
     """
     Calculate phishing score based on advanced URL analysis.
@@ -180,14 +196,16 @@ def calculate_phishing_score(email_result, ip_analysis):
     ip_score = calculate_ip_score(ip_analysis)
     security_check_score, spf_results, dmarc_results, dkim_results = calculate_security_check_score(urls)
     url_analyzer_score = calculate_url_analyzer_score(body)
+    transformer_score = calculate_transformer_score(body)
     
     # Weighted average
-    # Security Check: 28%, URL Analyzer: 28%, Metadata: 28%, IP: 16%
+    # Transformer (RoBERTa): 25%, Security Check: 25%, URL Analyzer: 20%, Metadata: 20%, IP: 10%
     overall_score = (
-        (security_check_score * 0.28) +
-        (url_analyzer_score * 0.28) +
-        (metadata_score * 0.28) +
-        (ip_score * 0.16)
+        (transformer_score * 0.25) +
+        (security_check_score * 0.25) +
+        (url_analyzer_score * 0.20) +
+        (metadata_score * 0.20) +
+        (ip_score * 0.10)
     )
     
     # Determine if SPF, DMARC, DKIM are present (any True in results means present)
@@ -203,6 +221,7 @@ def calculate_phishing_score(email_result, ip_analysis):
         "dkim": dkim_present,
         "originating_ip": ip_analysis.get("originating_ip"),
         "component_scores": {
+            "transformer_score": transformer_score,
             "security_check_score": security_check_score,
             "url_analyzer_score": url_analyzer_score,
             "metadata_score": metadata_score,
@@ -277,7 +296,15 @@ if __name__ == "__main__":
     print(f"\n📊 OVERALL SCORE: {phishing_score['overall_score']}/10")
     print(f"🚨 RISK LEVEL: {phishing_score['risk_level']}")
     
-    print("\n🔐 AUTHENTICATION RECORDS:")
+    print("\n� COMPONENT SCORES:")
+    scores = phishing_score['component_scores']
+    print(f"  • Transformer (RoBERTa): {scores['transformer_score']}")
+    print(f"  • Security Check Score: {scores['security_check_score']}")
+    print(f"  • URL Analyzer Score: {scores['url_analyzer_score']}")
+    print(f"  • Metadata Score: {scores['metadata_score']}")
+    print(f"  • IP Analysis Score: {scores['ip_score']}")
+    
+    print("\n�🔐 AUTHENTICATION RECORDS:")
     print(f"  • SPF: {phishing_score['spf']}")
     print(f"  • DMARC: {phishing_score['dmarc']}")
     print(f"  • DKIM: {phishing_score['dkim']}")
