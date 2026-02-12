@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-02-13T04:39:04.448718",
+  "timestamp": "2026-02-13T04:50:14.828532",
   "assessment": {
-    "overall_score": 1.02,
-    "risk_level": "MINIMAL",
+    "overall_score": 2.31,
+    "risk_level": "LOW",
     "spf": false,
     "dmarc": false,
     "dkim": false,
@@ -18,8 +18,8 @@
       "timing_score": 2.5,
       "metadata_score": 1.5,
       "ip_analysis_score": 1.5,
-      "url_security_score": 0,
-      "transformer_score": 0
+      "url_security_score": 10,
+      "transformer_score": 9.7
     },
     "details": {
       "header_mismatch": false,
