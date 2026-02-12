@@ -1,57 +1,44 @@
 import React from "react";
-import { useDarkMode } from "../context/DarkModeContext.jsx";
 
 const Header = () => {
-  const { isDark, toggleDarkMode } = useDarkMode();
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-sm dark:border-slate-800/80 dark:bg-[#111827]/95">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2.5 sm:py-3">
-
-        {/* Logo */}
+    <header className="sticky top-0 z-40 w-full border-b border-white/70 bg-[var(--card-bg)]/95 backdrop-blur shadow-md">
+      <div className="mx-auto flex min-h-[96px] w-full max-w-[1560px] items-center justify-between gap-6 px-4 py-5 sm:px-6 lg:px-10 xl:px-12">
+        {/* Logo / App name */}
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1a73e8] text-white font-semibold">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,var(--primary-color),var(--secondary-color))] text-base font-semibold text-white shadow-sm shadow-indigo-300/70">
             EA
           </div>
-          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
-            Email Risk Analyzer
-          </h1>
-        </div>
-
-        {/* Search Bar */}
-        <div className="hidden flex-1 max-w-xl sm:flex">
-          <div className="flex w-full items-center gap-2 rounded-full bg-[#eef3fc] px-4 py-2 text-sm text-slate-600 shadow-inner dark:bg-[#1f2937] dark:text-slate-200">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 opacity-70"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-              />
-            </svg>
-            <span className="opacity-70 text-[13px]">Search analyzed emails…</span>
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-text)] sm:text-sm">
+              Email Security
+            </span>
+            <h1 className="text-2xl font-semibold tracking-tight sm:text-[28px] md:text-[30px]">
+              Email Phishing Analyzer
+            </h1>
           </div>
         </div>
 
-        {/* Right Controls */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={toggleDarkMode}
-            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-          >
-            {isDark ? "Light" : "Dark"}
+        {/* Nav links */}
+        <nav className="hidden items-center gap-7 text-[17px] font-medium text-[var(--muted-text)] sm:flex">
+          <button className="transition-transform transition-colors hover:-translate-y-0.5 hover:text-[var(--primary-color)]">
+            Dashboard
           </button>
+          <button className="transition-transform transition-colors hover:-translate-y-0.5 hover:text-[var(--primary-color)]">
+            Security Tips
+          </button>
+          <button className="transition-transform transition-colors hover:-translate-y-0.5 hover:text-[var(--primary-color)]">
+            Help
+          </button>
+        </nav>
 
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-sm font-bold text-slate-700 dark:bg-slate-700 dark:text-slate-200">
-            DK
-          </div>
-        </div>
+        {/* Compact menu for mobile */}
+        <button
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/80 bg-white/70 text-xs font-semibold text-[var(--muted-text)] shadow-sm shadow-indigo-100/60 transition hover:-translate-y-0.5 hover:shadow-md sm:hidden"
+          aria-label="Open navigation"
+        >
+          ☰
+        </button>
       </div>
     </header>
   );

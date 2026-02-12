@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { UploadCloud } from 'lucide-react';
 
 const FileUpload = ({
   selectedFile,
@@ -61,10 +62,10 @@ const FileUpload = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`group relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-slate-300/60 bg-white p-6 text-center shadow-sm transition-all duration-150 dark:border-slate-700/60 dark:bg-[#111827] ${
+        className={`group relative flex min-h-[260px] cursor-pointer flex-col items-center justify-center rounded-3xl border border-gray-200/80 bg-white/90 p-8 text-center shadow-xl shadow-indigo-100/70 ring-1 ring-white/60 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl sm:p-10 lg:min-h-[300px] lg:p-12 ${
           isDragging
-            ? 'border-[#1a73e8] bg-slate-50 dark:border-[#8ab4f8] dark:bg-slate-900'
-            : 'hover:border-[#1a73e8] hover:bg-slate-50/60 dark:hover:border-[#8ab4f8] dark:hover:bg-slate-900'
+            ? 'border-[var(--primary-color)] bg-slate-50/80'
+            : 'hover:border-[var(--primary-color)] hover:bg-slate-50/60'
         }`}
       >
 
@@ -75,43 +76,31 @@ const FileUpload = ({
           className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
         />
 
-        <div className="relative z-20 flex flex-col items-center gap-3">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-[#8ab4f8] shadow-sm shadow-slate-900/40 dark:bg-slate-800 dark:text-[#c3ddff]">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-7 w-7"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="4" y="5" width="16" height="14" rx="2.5" />
-              <path d="M5 8.5 12 13l7-4.5" />
-            </svg>
+        <div className="relative z-20 flex flex-col items-center gap-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-400/70 ring-4 ring-white/70">
+            <UploadCloud className="h-8 w-8" />
           </div>
 
           <div>
-            <p className="text-base font-medium">
+            <p className="text-xl font-semibold sm:text-2xl">
               Drag &amp; drop your <span className="font-semibold">.eml</span>{' '}
               file here
             </p>
-            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+            <p className="mt-2 text-sm text-slate-500 sm:text-base">
               Or click to browse. We only accept raw email files (.eml).
             </p>
           </div>
 
-          <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] font-medium text-slate-600 shadow-sm shadow-slate-200/80 dark:bg-slate-800 dark:text-slate-300 dark:shadow-black/40">
+          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-600 shadow-sm shadow-slate-200/80">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
             <span>
               Selected:{' '}
               {selectedFile ? (
-                <span className="font-semibold text-slate-800 dark:text-slate-100">
+                <span className="font-semibold text-slate-800">
                   {selectedFile.name}
                 </span>
               ) : (
-                <span className="italic text-slate-400 dark:text-slate-500">
+                <span className="italic text-slate-400">
                   No file yet
                 </span>
               )}
@@ -126,8 +115,8 @@ const FileUpload = ({
         </p>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-[13px] text-slate-500 dark:text-slate-400">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <p className="text-sm text-slate-500 sm:text-[15px]">
           Make sure your email analysis server is running before you click
           <span className="font-semibold"> Analyze Email</span>.
         </p>
@@ -136,10 +125,10 @@ const FileUpload = ({
           type="button"
           onClick={onAnalyze}
           disabled={disabled}
-          className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold tracking-tight shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a73e8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f6f8fc] dark:focus-visible:ring-offset-[#0f172a] ${
+          className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-10 py-4.5 text-base font-semibold tracking-tight shadow-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-color)] focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 sm:w-auto sm:px-12 sm:text-lg lg:px-14 lg:py-5 ${
             disabled
-              ? 'cursor-not-allowed bg-slate-300 text-slate-600 shadow-none dark:bg-slate-700 dark:text-slate-400'
-              : 'bg-[#1a73e8] text-white shadow-sm hover:bg-[#185abc] active:scale-[0.98]'
+              ? 'cursor-not-allowed bg-slate-300 text-slate-600 shadow-none'
+              : 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-indigo-400/80 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98]'
           }`}
         >
           {isLoading && (
