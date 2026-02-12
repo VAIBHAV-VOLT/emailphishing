@@ -5,12 +5,17 @@ from email.message import Message
 
 def extract_ips(metadata):
     """
-    Extract all IPv4 addresses from email metadata.
+    Extract all IPv4 and IPv6 addresses from email metadata.
 
     :param metadata: dict containing email metadata (from extract_metadata)
     :return: list of IP address strings (may include private/loopback)
     """
-    ip_pattern = r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b'
+    # IPv4 pattern
+    ipv4_pattern = r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b'
+    
+    # IPv6 pattern - matches various IPv6 formats
+    ipv6_pattern = r'(?:[0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}'
+    
     ips = []
 
     # Extract from Received headers
@@ -18,14 +23,22 @@ def extract_ips(metadata):
     for header in received_headers:
         if not header:
             continue
-        found_ips = re.findall(ip_pattern, header)
-        ips.extend(found_ips)
+        # Extract IPv4
+        found_ipv4 = re.findall(ipv4_pattern, header)
+        ips.extend(found_ipv4)
+        # Extract IPv6
+        found_ipv6 = re.findall(ipv6_pattern, header)
+        ips.extend(found_ipv6)
 
     # Extract from X-Originating-IP header
     x_originating_ip = metadata.get("x_originating_ip")
     if x_originating_ip:
-        found_ips = re.findall(ip_pattern, x_originating_ip)
-        ips.extend(found_ips)
+        # Extract IPv4
+        found_ipv4 = re.findall(ipv4_pattern, x_originating_ip)
+        ips.extend(found_ipv4)
+        # Extract IPv6
+        found_ipv6 = re.findall(ipv6_pattern, x_originating_ip)
+        ips.extend(found_ipv6)
 
     # Remove duplicates while preserving order
     seen = set()
@@ -40,7 +53,7 @@ def extract_ips(metadata):
 
 def get_first_external_ip(ip_list):
     """
-    Return the first public (non-private, non-loopback) IPv4 address from a list.
+    Return the first public (non-private, non-loopback) IPv4 or IPv6 address from a list.
 
     :param ip_list: list of IP address strings
     :return: first external IP as string, or None if none found
