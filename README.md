@@ -1,130 +1,137 @@
-🦅 PhisHawk
-⚡ AI-Powered Phishing Email Detection System
+🚨 THE PROBLEM
 
-Team: PhisBusters | Hackathon: hackAVENSIS
+Phishing attacks are evolving rapidly.
 
+Today’s attackers use:
 
+⚠ AI-generated emails
 
+⚠ Social engineering tactics
 
+⚠ Spoofed domains
 
+⚠ Urgency & fear manipulation
 
-
-
-
-
-🚨 Problem Statement
-
-Phishing attacks are one of the most dangerous cyber threats today.
-Millions of users lose sensitive data due to:
-
-Fake banking emails
-
-Credential harvesting attacks
-
-Spoofed domains
-
-Social engineering tactics
-
-Traditional spam filters fail to detect AI-generated and context-aware phishing emails.
+Traditional spam filters fail against intelligent phishing attempts.
 
 We needed something smarter.
+We built PhisHawk.
 
-💡 Our Solution — PhisHawk
+💡 THE SOLUTION — PHISHAWK
 
-PhisHawk is an AI-powered phishing detection system that:
+PhisHawk is an AI-powered phishing detection engine that:
 
-Analyzes .eml email files
+🔍 Parses .eml email files
+🧠 Uses NLP & HuggingFace models
+📊 Calculates phishing probability
+📁 Generates structured JSON assessment
+🎯 Identifies suspicious patterns & manipulation cues
 
-Uses NLP & Machine Learning
+It doesn’t just say “Spam” —
+It explains why it’s dangerous.
 
-Integrates HuggingFace models
+🔥 CORE FEATURES
+🛡 AI-Based Detection
 
-Generates a phishing risk score
+Context-aware NLP processing
 
-Outputs structured phishing assessment in JSON
+Semantic analysis of email content
 
-Detects suspicious patterns, links, and manipulation cues
+ML-driven phishing probability scoring
 
-Think of it as an intelligent cybersecurity assistant 🛡️
+📊 Risk Scoring Engine
 
-🔥 Key Features
+Custom backend scoring logic
 
-✔️ AI-based phishing classification
-✔️ HuggingFace NLP model integration
-✔️ Phishing risk scoring system
-✔️ Structured JSON assessment output
-✔️ Modular backend architecture
-✔️ Tailwind-powered frontend
-✔️ Test & debug scripts included
-✔️ Sample email dataset included
+High / Medium / Low risk classification
 
-🏗️ Architecture Overview
+Suspicious indicator breakdown
+
+🧩 Modular Architecture
+
+Separate email analyzer module
+
+Dedicated scoring backend
+
+Testing & debugging scripts included
+
+🎨 Clean Frontend
+
+Tailwind CSS powered UI
+
+Structured result display
+
+JSON-ready for API integration
+
+🏗 SYSTEM ARCHITECTURE
 flowchart TD
-    A[.eml Email Input] --> B[Email Analyzer Module]
-    B --> C[NLP Processing]
-    C --> D[HuggingFace Model]
-    D --> E[Phishing Risk Scoring Engine]
-    E --> F[JSON Phishing Assessment]
-    F --> G[Frontend Display (Tailwind UI)]
+    A[📥 .eml Email Input] --> B[🔎 Email Analyzer]
+    B --> C[🧠 NLP Processing]
+    C --> D[🤖 HuggingFace Model]
+    D --> E[📊 Phishing Risk Engine]
+    E --> F[📁 JSON Assessment Output]
+    F --> G[🖥 Frontend Display]
 
-Architecture Explanation
+🔍 Architecture Breakdown
 
 Email file is parsed
 
-Content extracted and cleaned
+Content cleaned & tokenized
 
-NLP model processes semantic patterns
+NLP model extracts semantic patterns
 
-ML model predicts phishing probability
+ML predicts phishing probability
 
-Score backend calculates risk score
+Backend assigns risk score
 
-Output stored in phishing_assessment.json
+Output saved in phishing_assessment.json
 
-Results displayed via frontend
+Frontend displays structured insights
 
-🛠️ Tech Stack
-Layer	Technology Used
-Backend	Python
-ML/NLP	HuggingFace Transformers
-Scoring	Custom Phishing Assessment Engine
-Frontend	Tailwind CSS + JavaScript
-Testing	Python test scripts
-Data Input	.eml Email Files
-📂 Folder Structure
+🛠 TECH STACK
+Layer	Technology
+🐍 Backend	Python
+🤖 ML/NLP	HuggingFace Transformers
+📊 Scoring	Custom Risk Engine
+🎨 Frontend	Tailwind CSS + JavaScript
+🧪 Testing	Python Scripts
+📂 Input	.eml Email Files
+📂 PROJECT STRUCTURE
 PhisHawk/
 │
-├── emailanalyzer/        # Email parsing & NLP processing
-├── score_backend/        # Phishing scoring engine
-├── main.py               # Main execution file
-├── test_analyzer.py      # Testing module
-├── test_model_debug.py   # Model debugging
+├── emailanalyzer/         
+├── score_backend/         
+├── main.py                
+├── test_analyzer.py       
+├── test_model_debug.py    
 ├── phishing_assessment.json
 ├── sample.eml
 ├── email2.eml
 ├── requirements.txt
 └── README.md
 
-⚙️ Installation Guide
+⚙ INSTALLATION
 1️⃣ Clone Repository
 git clone https://github.com/VAIBHAV-VOLT/emailphishing.git
 cd emailphishing
 
 2️⃣ Create Virtual Environment
 python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
+source venv/bin/activate
+# Windows:
+venv\Scripts\activate
 
 3️⃣ Install Dependencies
 pip install -r requirements.txt
 
-▶️ Usage Guide
-Run Main Detection
+▶️ RUN PHISHAWK
+🔹 Run Detection
 python main.py
 
-Run Test Analyzer
+🔹 Run Analyzer Tests
 python test_analyzer.py
 
-📊 Sample Output
+📊 SAMPLE OUTPUT
 {
   "email_subject": "Urgent: Verify Your Bank Account",
   "phishing_probability": 0.87,
@@ -137,85 +144,62 @@ python test_analyzer.py
 }
 
 
-PhisHawk doesn't just say "Spam" —
-It explains why it is dangerous.
+✔ Transparent
+✔ Structured
+✔ Enterprise-ready
 
-🎥 Demo
+🏆 WHY PHISHAWK STANDS OUT (For Judges)
 
-Add your demo GIF here:
+✅ AI-driven — not rule-based
+✅ Scalable modular architecture
+✅ JSON output for API integration
+✅ Real-world phishing compatibility
+✅ Enterprise deployable
 
-![Demo](demo.gif)
+PhisHawk can evolve into:
 
+📧 Email gateway filter
 
-(Upload your hackathon demo recording as demo.gif in repo)
+🌐 Browser extension backend
 
-🚀 Why PhisHawk Stands Out (For Judges)
+🏢 Enterprise mail server plugin
 
-🔹 AI-driven, not rule-based
-🔹 Modular architecture (scalable for enterprise use)
-🔹 Real-world phishing dataset compatible
-🔹 JSON output enables API integration
-🔹 Can be deployed as:
+🛡 SOC automation tool
 
-Email gateway filter
+This is not just a hackathon project.
+This is a cyber defense layer.
 
-Browser extension backend
+🌍 REAL-WORLD IMPACT
 
-Enterprise mail server plugin
-
-SOC (Security Operations Center) tool
-
-PhisHawk is not just a project —
-It’s a cyber defense layer.
-
-🌍 Real-World Impact
-
-Reduces phishing-based financial fraud
+Prevents financial fraud
 
 Protects user credentials
 
-Helps organizations automate email threat detection
+Automates phishing threat detection
 
-Supports future AI-based cyber intelligence systems
+Supports AI-based cyber intelligence
 
-With rising AI-generated scams, PhisHawk becomes even more relevant.
+In an era of AI-powered scams,
+PhisHawk becomes more relevant than ever.
 
-🔮 Future Improvements
+🔮 FUTURE IMPROVEMENTS
 
-Real-time email API integration
+🌐 Real-time Email API integration
 
-Browser extension
+📊 Live dashboard analytics
 
-Live dashboard analytics
+🧠 Explainable AI visualization
 
-Explainable AI visualization
+☁ Cloud deployment (AWS / GCP)
 
-Threat intelligence database integration
+🔐 Threat intelligence database
 
-Deployment on cloud (AWS/GCP)
-
-👥 Team PhisBusters
+👥 TEAM PHISBUSTERS
 
 Abhinav Gupta
 Vaibhav
-Eklavya Rajput
 Rahul Nalla
 Sumrit Singh
+Eklavya Rajput
 
-Built with ⚡ passion for cybersecurity & AI innovation.
-
-🏆 hackAVENSIS Submission
-
-PhisHawk represents:
-
-Innovation
-
-Practical security solution
-
-AI-powered automation
-
-Real-world scalability
-
-We believe AI should defend users — not attack them.
-
-🦅 PhisHawk — Hunt Phishing Before It Hunts You.
+Built with ⚡ passion for AI & Cybersecurity.
