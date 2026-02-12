@@ -1,5 +1,5 @@
-import React from 'react';
-import DonutProgress from './DonutProgress.jsx';
+import React from "react";
+import DonutProgress from "./DonutProgress.jsx";
 
 const ResultCard = ({ result }) => {
   if (!result) return null;
@@ -13,147 +13,166 @@ const ResultCard = ({ result }) => {
     risk_score,
   } = result;
 
-  const normalizedCategory = (category || '').toString().toLowerCase();
-  const isSafe =
-    normalizedCategory === 'safe' || Number(risk_score) < 40;
+  const normalizedCategory = (category || "").toString().toLowerCase();
 
-  const bannerText = isSafe ? 'Email is SAFE' : 'Email is UNSAFE';
-  const bannerSub = isSafe
-    ? 'No strong phishing or spam indicators detected.'
-    : 'Potentially malicious content or sender behavior detected. Handle with caution.';
+  const riskValue = Math.max(0, Math.min(100, Number(risk_score) || 0));
 
-  const bannerClasses = isSafe
-    ? 'from-emerald-500/90 to-teal-400/90 text-emerald-900'
-    : 'from-rose-500/90 to-orange-400/90 text-rose-950';
+  const getRiskLabel = (value) => {
+    if (value < 35) return "Low Risk";
+    if (value < 70) return "Medium Risk";
+    return "High Risk";
+  };
+
+  const getRiskBadge = (value) => {
+    if (value < 35)
+      return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-900";
+    if (value < 70)
+      return "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-900";
+    return "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-900";
+  };
+
+  const getAuthBadge = (status) => {
+    const s = (status || "").toLowerCase();
+
+    if (s === "pass")
+      return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-900";
+
+    if (s === "fail")
+      return "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-900";
+
+    return "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700";
+  };
 
   return (
-    <section className="mt-6 space-y-4">
-      <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white/80 shadow-lg shadow-slate-200/90 backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/80 dark:shadow-black/70">
-        <div
-          className={`flex items-center justify-between gap-4 bg-gradient-to-r ${bannerClasses} px-5 py-3`}
-        >
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 2 2 7l10 5 10-5-10-5Z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm font-semibold tracking-tight">
-                {bannerText}
-              </p>
-              <p className="text-[11px] font-medium opacity-90">
-                {bannerSub}
-              </p>
-            </div>
+    <div className="space-y-5">
+      {/* Title */}
+      <div>
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          Risk Summary
+        </p>
+        <h3 className="mt-1 text-xl font-semibold text-slate-900 dark:text-slate-100">
+          Email Security Report
+        </h3>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+          Quick breakdown of authenticity and risk indicators.
+        </p>
+      </div>
+
+      {/* Risk Meter */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-[#111827]">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+              Risk Score
+            </p>
+            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+              Based on sender trust + spam/phishing signals.
+            </p>
+
+            <span
+              className={`mt-3 inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${getRiskBadge(
+                riskValue
+              )}`}
+            >
+              {getRiskLabel(riskValue)}
+            </span>
           </div>
 
-          <div className="hidden text-[11px] font-mono uppercase tracking-[0.2em] text-white/80 sm:block">
-            {normalizedCategory || 'Unknown'}
-          </div>
-        </div>
-
-        <div className="grid gap-6 p-5 md:grid-cols-[minmax(0,2fr)_minmax(0,1.3fr)] md:items-center">
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                HEADER
-              </p>
-              <div className="rounded-xl bg-slate-50/90 p-3 text-sm shadow-sm shadow-slate-100 dark:bg-slate-900/90 dark:shadow-black/60">
-                <p className="truncate">
-                  <span className="font-semibold text-slate-600 dark:text-slate-200">
-                    From:
-                  </span>{' '}
-                  <span className="font-mono text-xs text-slate-700 dark:text-slate-300">
-                    {from || 'Unknown sender'}
-                  </span>
-                </p>
-                <p className="mt-1.5">
-                  <span className="font-semibold text-slate-600 dark:text-slate-200">
-                    Subject:
-                  </span>{' '}
-                  <span className="text-sm text-slate-700 dark:text-slate-200">
-                    {subject || 'No subject'}
-                  </span>
-                </p>
-              </div>
-            </div>
-
-            <div className="grid gap-3 text-sm sm:grid-cols-3">
-              <div className="rounded-xl bg-slate-50/90 p-3 shadow-sm shadow-slate-100 dark:bg-slate-900/90 dark:shadow-black/60">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  SPF
-                </p>
-                <p
-                  className={`mt-1 inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-semibold ${
-                    (spf_status || '').toLowerCase() === 'pass'
-                      ? 'border-emerald-300/80 bg-emerald-50 text-emerald-700 dark:border-emerald-500/70 dark:bg-emerald-950/60 dark:text-emerald-300'
-                      : 'border-rose-300/80 bg-rose-50 text-rose-700 dark:border-rose-500/70 dark:bg-rose-950/60 dark:text-rose-300'
-                  }`}
-                >
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      (spf_status || '').toLowerCase() === 'pass'
-                        ? 'bg-emerald-400'
-                        : 'bg-rose-400'
-                    }`}
-                  />
-                  <span>{spf_status || 'Unknown'}</span>
-                </p>
-              </div>
-
-              <div className="rounded-xl bg-slate-50/90 p-3 shadow-sm shadow-slate-100 dark:bg-slate-900/90 dark:shadow-black/60">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  DKIM
-                </p>
-                <p
-                  className={`mt-1 inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-semibold ${
-                    (dkim_status || '').toLowerCase() === 'pass'
-                      ? 'border-emerald-300/80 bg-emerald-50 text-emerald-700 dark:border-emerald-500/70 dark:bg-emerald-950/60 dark:text-emerald-300'
-                      : 'border-rose-300/80 bg-rose-50 text-rose-700 dark:border-rose-500/70 dark:bg-rose-950/60 dark:text-rose-300'
-                  }`}
-                >
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      (dkim_status || '').toLowerCase() === 'pass'
-                        ? 'bg-emerald-400'
-                        : 'bg-rose-400'
-                    }`}
-                  />
-                  <span>{dkim_status || 'Unknown'}</span>
-                </p>
-              </div>
-
-              <div className="rounded-xl bg-slate-50/90 p-3 shadow-sm shadow-slate-100 dark:bg-slate-900/90 dark:shadow-black/60">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  Category
-                </p>
-                <p className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-slate-900 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-100 dark:bg-slate-100 dark:text-slate-900">
-                  <span className="px-2 py-1">
-                    {(category || 'Unknown').toString()}
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center justify-center gap-3 rounded-2xl bg-slate-50/90 p-4 text-center shadow-inner shadow-slate-100 dark:bg-slate-950/90 dark:shadow-black/70">
-            <DonutProgress score={risk_score} />
+          <div className="shrink-0 scale-90">
+            <DonutProgress score={riskValue} />
           </div>
         </div>
       </div>
-    </section>
+
+      {/* Email Info */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-[#111827]">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          Email Header
+        </p>
+
+        <div className="mt-3 space-y-3 text-sm">
+          <div className="flex items-start justify-between gap-3">
+            <p className="font-semibold text-slate-700 dark:text-slate-300">
+              From
+            </p>
+            <p className="max-w-55 truncate text-right font-mono text-xs text-slate-800 dark:text-slate-100">
+              {from || "Unknown sender"}
+            </p>
+          </div>
+
+          <div className="flex items-start justify-between gap-3">
+            <p className="font-semibold text-slate-700 dark:text-slate-300">
+              Subject
+            </p>
+            <p className="max-w-50 truncate text-right text-slate-800 dark:text-slate-100">
+              {subject || "No subject"}
+            </p>
+          </div>
+
+          <div className="flex items-start justify-between gap-3">
+            <p className="font-semibold text-slate-700 dark:text-slate-300">
+              Category
+            </p>
+            <span className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white dark:bg-slate-100 dark:text-slate-900">
+              {normalizedCategory || "unknown"}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Authentication Status */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-[#111827]">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          Authentication Checks
+        </p>
+
+        <div className="mt-4 space-y-3">
+          {/* SPF */}
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              SPF
+            </p>
+            <span
+              className={`rounded-full border px-3 py-1 text-xs font-semibold ${getAuthBadge(
+                spf_status
+              )}`}
+            >
+              {spf_status || "Unknown"}
+            </span>
+          </div>
+
+          {/* DKIM */}
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              DKIM
+            </p>
+            <span
+              className={`rounded-full border px-3 py-1 text-xs font-semibold ${getAuthBadge(
+                dkim_status
+              )}`}
+            >
+              {dkim_status || "Unknown"}
+            </span>
+          </div>
+
+          {/* DMARC Placeholder */}
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              DMARC
+            </p>
+            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+              Not available
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer Note */}
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-[13px] text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+        Tip: If SPF/DKIM fails and risk is high, avoid clicking links or
+        downloading attachments.
+      </div>
+    </div>
   );
 };
 

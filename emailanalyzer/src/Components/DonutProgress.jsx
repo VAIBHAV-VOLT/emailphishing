@@ -68,7 +68,7 @@ const DonutProgress = ({ score = 0 }) => {
         />
       </svg>
 
-      <div className="pointer-events-none absolute inset-6 flex flex-col items-center justify-center rounded-full bg-white/80 text-center shadow-inner shadow-slate-200/90 dark:bg-slate-950/90 dark:shadow-black/60">
+      <div className="pointer-events-none absolute inset-6 flex flex-col items-center justify-center rounded-full bg-white/90 text-center shadow-inner shadow-slate-200/90 dark:bg-[#0b1120]/95 dark:shadow-black/60">
         <div className="relative mb-1 inline-flex items-center gap-2">
           <span className="text-3xl font-bold tabular-nums">
             {Math.round(normalized)}

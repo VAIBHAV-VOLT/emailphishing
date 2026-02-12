@@ -61,13 +61,12 @@ const FileUpload = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`group relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-white/70 p-6 text-center shadow-sm shadow-slate-200/70 backdrop-blur-xl transition-all duration-300 dark:bg-slate-900/70 dark:shadow-black/40 ${
+        className={`group relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-slate-300/60 bg-white p-6 text-center shadow-sm transition-all duration-150 dark:border-slate-700/60 dark:bg-[#111827] ${
           isDragging
-            ? 'border-blue-500/90 bg-blue-50/60 dark:border-blue-400/90 dark:bg-slate-900/80'
-            : 'border-slate-300/70 hover:border-blue-500/70 hover:bg-blue-50/40 dark:border-slate-700/80 dark:hover:border-blue-400/80 dark:hover:bg-slate-900/80'
+            ? 'border-[#1a73e8] bg-slate-50 dark:border-[#8ab4f8] dark:bg-slate-900'
+            : 'hover:border-[#1a73e8] hover:bg-slate-50/60 dark:hover:border-[#8ab4f8] dark:hover:bg-slate-900'
         }`}
       >
-        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-tr from-blue-500/10 via-purple-500/10 to-emerald-400/10 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
 
         <input
           type="file"
@@ -77,7 +76,7 @@ const FileUpload = ({
         />
 
         <div className="relative z-20 flex flex-col items-center gap-3">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-500 via-purple-500 to-emerald-400 text-white shadow-md shadow-blue-500/40">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-[#8ab4f8] shadow-sm shadow-slate-900/40 dark:bg-slate-800 dark:text-[#c3ddff]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-7 w-7"
@@ -88,23 +87,23 @@ const FileUpload = ({
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="M4 4h16v16H4z" />
-              <path d="M4 7.5 12 13l8-5.5" />
+              <rect x="4" y="5" width="16" height="14" rx="2.5" />
+              <path d="M5 8.5 12 13l7-4.5" />
             </svg>
           </div>
 
           <div>
-            <p className="text-sm font-medium">
+            <p className="text-base font-medium">
               Drag &amp; drop your <span className="font-semibold">.eml</span>{' '}
               file here
             </p>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
               Or click to browse. We only accept raw email files (.eml).
             </p>
           </div>
 
-          <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-50/80 px-3 py-1 text-[11px] font-medium text-slate-600 shadow-sm shadow-slate-200/80 dark:bg-slate-800/80 dark:text-slate-300 dark:shadow-black/40">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+          <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] font-medium text-slate-600 shadow-sm shadow-slate-200/80 dark:bg-slate-800 dark:text-slate-300 dark:shadow-black/40">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
             <span>
               Selected:{' '}
               {selectedFile ? (
@@ -128,7 +127,7 @@ const FileUpload = ({
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs text-slate-500 dark:text-slate-400">
+        <p className="text-[13px] text-slate-500 dark:text-slate-400">
           Make sure your email analysis server is running before you click
           <span className="font-semibold"> Analyze Email</span>.
         </p>
@@ -137,10 +136,10 @@ const FileUpload = ({
           type="button"
           onClick={onAnalyze}
           disabled={disabled}
-          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold tracking-tight shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:focus-visible:ring-offset-slate-950 ${
+          className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold tracking-tight shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a73e8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f6f8fc] dark:focus-visible:ring-offset-[#0f172a] ${
             disabled
-              ? 'cursor-not-allowed bg-slate-300/70 text-slate-600 shadow-none dark:bg-slate-700/70 dark:text-slate-400'
-              : 'bg-gradient-to-tr from-blue-500 via-purple-500 to-emerald-400 text-white shadow-blue-500/40 hover:shadow-md active:scale-[0.98]'
+              ? 'cursor-not-allowed bg-slate-300 text-slate-600 shadow-none dark:bg-slate-700 dark:text-slate-400'
+              : 'bg-[#1a73e8] text-white shadow-sm hover:bg-[#185abc] active:scale-[0.98]'
           }`}
         >
           {isLoading && (
