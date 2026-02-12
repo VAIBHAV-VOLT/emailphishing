@@ -20,7 +20,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-@app.route('/analyze-email', methods=['POST'])
+@app.route('/analyze_email_route', methods=['POST'])
 def analyze_email_route():
     """Analyze uploaded email file."""
     try:
