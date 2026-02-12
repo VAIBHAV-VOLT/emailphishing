@@ -1,6 +1,18 @@
 import socket
 from urllib.parse import urlparse
 import dns.resolver
+import dns.exception
+
+# Create a custom resolver with proper timeout settings
+resolver = dns.resolver.Resolver()
+resolver.timeout = 5.0
+resolver.lifetime = 5.0
+
+# Set socket timeout to 5 seconds
+socket.setdefaulttimeout(5.0)
+
+# Simple cache for DNS lookups to avoid repeated queries
+_dns_cache = {}
 
 # Import your existing analyzer
 from analyzer import analyze_email
@@ -18,13 +30,20 @@ def get_domain(url: str) -> str:
 # SPF Check
 # -------------------------------
 def has_spf(domain: str) -> bool:
+    cache_key = f"spf_{domain}"
+    if cache_key in _dns_cache:
+        return _dns_cache[cache_key]
+    
     try:
-        answers = dns.resolver.resolve(domain, "TXT")
+        answers = resolver.resolve(domain, "TXT")
         for r in answers:
             if "v=spf1" in r.to_text().lower():
+                _dns_cache[cache_key] = True
                 return True
-    except Exception:
+    except (dns.exception.DNSException, Exception):
         pass
+    
+    _dns_cache[cache_key] = False
     return False
 
 
@@ -32,13 +51,47 @@ def has_spf(domain: str) -> bool:
 # DMARC Check
 # -------------------------------
 def has_dmarc(domain: str) -> bool:
+    cache_key = f"dmarc_{domain}"
+    if cache_key in _dns_cache:
+        return _dns_cache[cache_key]
+    
     try:
-        answers = dns.resolver.resolve("_dmarc." + domain, "TXT")
+        answers = resolver.resolve("_dmarc." + domain, "TXT")
         for r in answers:
             if "v=dmarc1" in r.to_text().lower():
+                _dns_cache[cache_key] = True
                 return True
+    except (dns.exception.DNSException, Exception):
+        pass
+    
+    _dns_cache[cache_key] = False
+    return False
+
+
+# -------------------------------
+# DKIM Check
+# -------------------------------
+def has_dkim(domain: str) -> bool:
+    cache_key = f"dkim_{domain}"
+    if cache_key in _dns_cache:
+        return _dns_cache[cache_key]
+    
+    try:
+        # Check only the most common DKIM selectors (not all 10)
+        selectors = ["default", "selector1", "selector2", "s1", "s2"]
+        for selector in selectors:
+            try:
+                answers = resolver.resolve(f"{selector}._domainkey.{domain}", "TXT")
+                for r in answers:
+                    if "v=dkim1" in r.to_text().lower():
+                        _dns_cache[cache_key] = True
+                        return True
+            except (dns.exception.DNSException, Exception):
+                continue
     except Exception:
         pass
+    
+    _dns_cache[cache_key] = False
     return False
 
 
@@ -64,12 +117,18 @@ def suspicious_domain(domain: str) -> bool:
 # DNS Reputation Check
 # -------------------------------
 def unknown_ip(domain: str) -> bool:
+    cache_key = f"ip_{domain}"
+    if cache_key in _dns_cache:
+        return _dns_cache[cache_key]
+    
     try:
+        # Only check if domain resolves to an IP (skip slow reverse lookup)
         ip = socket.gethostbyname(domain)
-        socket.gethostbyaddr(ip)
-        return False
+        _dns_cache[cache_key] = False
+        return False  # Domain resolved successfully
     except Exception:
-        return True
+        _dns_cache[cache_key] = True
+        return True  # Domain not resolvable
 
 
 # -------------------------------
@@ -78,6 +137,7 @@ def unknown_ip(domain: str) -> bool:
 def analyze_domain(domain: str):
     spf = has_spf(domain)
     dmarc = has_dmarc(domain)
+    dkim = has_dkim(domain)
     suspicious = suspicious_domain(domain)
     unknown = unknown_ip(domain)
 
@@ -86,6 +146,8 @@ def analyze_domain(domain: str):
         score += 1
     if not dmarc:
         score += 2
+    if not dkim:
+        score += 1
     if suspicious:
         score += 2
     if unknown:
@@ -98,7 +160,7 @@ def analyze_domain(domain: str):
     else:
         verdict = "Phishing"
 
-    return score, verdict, spf, dmarc, suspicious, unknown
+    return score, verdict, spf, dmarc, dkim, suspicious, unknown
 
 
 # -------------------------------
@@ -132,7 +194,7 @@ def main():
         url = url_data["full_url"]
         domain = get_domain(url)
 
-        score, verdict, spf, dmarc, suspicious, unknown = analyze_domain(
+        score, verdict, spf, dmarc, dkim, suspicious, unknown = analyze_domain(
             domain)
 
         print("\n--------------------------------")
@@ -140,6 +202,7 @@ def main():
         print("Domain:", domain)
         print("SPF Present:", spf)
         print("DMARC Present:", dmarc)
+        print("DKIM Present:", dkim)
         print("Suspicious Pattern:", suspicious)
         print("Resolvable Host:", not unknown)
         print("Risk Score:", score)
