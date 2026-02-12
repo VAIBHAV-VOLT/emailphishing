@@ -2,7 +2,7 @@
 """
 Email Phishing Analyzer - Flask Web Server
 Comprehensive phishing detection using ML models + rule-based analysis
-Integrated with score_calculator (combines phishingtool + ML analysis)
+Integrated with score_calculator (combines ALL phishingtool modules)
 """
 
 import sys
@@ -11,8 +11,6 @@ from flask_cors import CORS
 from flask import Flask, request, jsonify
 from datetime import datetime
 from waitress import serve
-# Add score_backend to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'score_backend'))
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -25,7 +23,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/analyze_email_route', methods=['POST'])
 def analyze_email_route():
-    """Analyze uploaded email file using integrated score_calculator."""
+    """Analyze uploaded email file using comprehensive score_calculator."""
     try:
         # Check if file is in request
         if 'file' not in request.files:
@@ -46,36 +44,37 @@ def analyze_email_route():
         file.save(temp_path)
 
         try:
-            # Import integrated score_calculator modules
-            from score_calculator import calculate_phishing_score
-            from analyzer import analyze_email, load_email
-            from infrastructure_analysis import analyze_received_headers
+            # Import comprehensive score_calculator from phishingtool
+            from phishingtool.score_calculator import (
+                calculate_comprehensive_phishing_score,
+                save_to_json
+            )
 
-            # Load and analyze email
-            msg = load_email(temp_path)
-            email_result = analyze_email(temp_path)
-            ip_analysis = analyze_received_headers(msg)
+            # Calculate comprehensive phishing score (includes ALL 12 modules)
+            result = calculate_comprehensive_phishing_score(temp_path)
 
-            # Calculate phishing score with full integration
-            result = calculate_phishing_score(email_result, ip_analysis, raw_msg=msg)
-
-            # Return result JSON with required attributes
-            response = {
-                'status': 'success',
-                'data': {
-                    'overall_score': result['overall_score'],
-                    'risk_level': result['risk_level'],
-                    'spf': result['spf'],
-                    'dmarc': result['dmarc'],
-                    'dkim': result['dkim'],
-                    'originating_ip': result['originating_ip'],
-                    'component_scores': result.get('component_scores', {}),
-                    'details': result.get('details', {}),
-                    'phishingtool_results': result.get('phishingtool_results', {})
+            if result:
+                # Return result JSON with all component scores
+                response = {
+                    'status': 'success',
+                    'data': {
+                        'overall_score': result['overall_score'],
+                        'risk_level': result['risk_level'],
+                        'spf': result['spf'],
+                        'dmarc': result['dmarc'],
+                        'dkim': result['dkim'],
+                        'originating_ip': result['originating_ip'],
+                        'component_scores': result.get('component_scores', {}),
+                        'details': result.get('details', {})
+                    }
                 }
-            }
 
-            return jsonify(response), 200
+                return jsonify(response), 200
+            else:
+                return jsonify({'error': 'Failed to calculate phishing score'}), 500
+
+        except Exception as analysis_error:
+            return jsonify({'error': f'Score calculation error: {str(analysis_error)}'}), 500
 
         finally:
             # Clean up temp file
@@ -92,12 +91,20 @@ def analyze_email_route():
 @app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint."""
-    return jsonify({'status': 'healthy', 'service': 'Email Phishing Analyzer - Integrated ML + Rule-Based Analysis'}), 200
+    return jsonify({
+        'status': 'healthy',
+        'service': 'Email Phishing Analyzer - Comprehensive Scoring',
+        'modules': [
+            'Attachments', 'Authentication', 'Headers', 'Domain',
+            'URLs', 'Infrastructure', 'MIME', 'Timing',
+            'Metadata', 'IP Analysis', 'URL Security', 'Transformer'
+        ]
+    }), 200
 
 
 if __name__ == "__main__":
     print("🚀 Starting Email Phishing Analyzer Web Server")
-    print("� Features: ML-based URL analysis + Transformer email body + Rule-based phishingtool checks")
+    print("📊 Features: Comprehensive scoring from ALL 12 phishing analysis modules")
     print("📱 POST email files to: http://localhost:5000/analyze_email_route")
     print("💚 GET health check: http://localhost:5000/health")
     print("Press CTRL+C to stop the server\n")
