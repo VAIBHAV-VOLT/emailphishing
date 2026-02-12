@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from google import genai
 from google.genai import types
-import ai
 import os
 from dotenv import load_dotenv
 
