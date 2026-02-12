@@ -1,2 +1,2 @@
 # emailphishing
-phishing detecting project for hackathon
+phishing detecting project for hackath

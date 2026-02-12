@@ -9,7 +9,7 @@ import os
 from flask_cors import CORS
 from flask import Flask, request, jsonify
 from datetime import datetime
-
+from waitress import serve
 # Add score_backend to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'score_backend'))
 
@@ -82,4 +82,4 @@ if __name__ == "__main__":
     print("🚀 Starting Email Phishing Analyzer Web Server")
     print("📱 POST email files to: http://localhost:5000/analyze-email")
     print("Press CTRL+C to stop the server\n")
-    app.run(debug=True, host='localhost', port=5000)
+    serve(app, host='0.0.0.0', port=5000)
