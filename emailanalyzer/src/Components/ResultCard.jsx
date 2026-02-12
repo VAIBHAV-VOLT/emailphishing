@@ -1,5 +1,6 @@
 import React from "react";
 import DonutProgress from "./DonutProgress.jsx";
+import { ShieldCheck, AlertTriangle, MailWarning } from "lucide-react";
 
 const ResultCard = ({ result }) => {
   if (!result) return null;
@@ -26,7 +27,10 @@ const ResultCard = ({ result }) => {
   const getRiskBadge = (value) => {
     if (value < 35)
       return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      return "bg-emerald-50 text-emerald-700 border-emerald-200";
     if (value < 70)
+      return "bg-amber-50 text-amber-700 border-amber-200";
+    return "bg-rose-50 text-rose-700 border-rose-200";
       return "bg-amber-50 text-amber-700 border-amber-200";
     return "bg-rose-50 text-rose-700 border-rose-200";
   };
@@ -36,10 +40,13 @@ const ResultCard = ({ result }) => {
 
     if (s === "pass")
       return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      return "bg-emerald-50 text-emerald-700 border-emerald-200";
 
     if (s === "fail")
       return "bg-rose-50 text-rose-700 border-rose-200";
+      return "bg-rose-50 text-rose-700 border-rose-200";
 
+    return "bg-slate-50 text-slate-600 border-slate-200";
     return "bg-slate-50 text-slate-600 border-slate-200";
   };
 
@@ -51,8 +58,10 @@ const ResultCard = ({ result }) => {
           Risk Summary
         </p>
         <h3 className="mt-2 text-2xl font-semibold tracking-tight md:text-[26px]">
+        <h3 className="mt-2 text-2xl font-semibold tracking-tight md:text-[26px]">
           Email Security Report
         </h3>
+        <p className="mt-2 text-sm text-(--muted-text) sm:text-base">
         <p className="mt-2 text-sm text-(--muted-text) sm:text-base">
           Quick breakdown of authenticity and risk indicators.
         </p>
