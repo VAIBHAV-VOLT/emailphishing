@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Email Phishing Analyzer - Flask Web Server
-Analyzes email files for phishing risk using multiple analyzers
+Comprehensive phishing detection using ML models + rule-based analysis
+Integrated with score_calculator (combines phishingtool + ML analysis)
 """
 
 import sys
@@ -24,42 +25,58 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/analyze_email_route', methods=['POST'])
 def analyze_email_route():
-    """Analyze uploaded email file."""
+    """Analyze uploaded email file using integrated score_calculator."""
     try:
         # Check if file is in request
         if 'file' not in request.files:
             return jsonify({'error': 'No file provided'}), 400
-        
+
         file = request.files['file']
-        
+
         if file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
-        
+
         if not file.filename.endswith('.eml'):
             return jsonify({'error': 'Invalid file format. Please upload a .eml file'}), 400
-        
+
         # Save uploaded file temporarily
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         temp_filename = f"temp_{timestamp}_{file.filename}"
         temp_path = os.path.join(app.config['UPLOAD_FOLDER'], temp_filename)
         file.save(temp_path)
-        
+
         try:
-            # Import analyzers
+            # Import integrated score_calculator modules
+            from score_calculator import calculate_phishing_score
             from analyzer import analyze_email, load_email
             from infrastructure_analysis import analyze_received_headers
-            from score_calculator import calculate_phishing_score
-            
-            # Load and analyze
+
+            # Load and analyze email
             msg = load_email(temp_path)
             email_result = analyze_email(temp_path)
             ip_analysis = analyze_received_headers(msg)
-            
-            # Calculate score
-            phishing_score = calculate_phishing_score(email_result, ip_analysis)
-            
-            return jsonify(phishing_score), 200
-            
+
+            # Calculate phishing score with full integration
+            result = calculate_phishing_score(email_result, ip_analysis, raw_msg=msg)
+
+            # Return result JSON with required attributes
+            response = {
+                'status': 'success',
+                'data': {
+                    'overall_score': result['overall_score'],
+                    'risk_level': result['risk_level'],
+                    'spf': result['spf'],
+                    'dmarc': result['dmarc'],
+                    'dkim': result['dkim'],
+                    'originating_ip': result['originating_ip'],
+                    'component_scores': result.get('component_scores', {}),
+                    'details': result.get('details', {}),
+                    'phishingtool_results': result.get('phishingtool_results', {})
+                }
+            }
+
+            return jsonify(response), 200
+
         finally:
             # Clean up temp file
             if os.path.exists(temp_path):
@@ -67,7 +84,7 @@ def analyze_email_route():
                     os.remove(temp_path)
                 except:
                     pass
-    
+
     except Exception as e:
         return jsonify({'error': f'Analysis error: {str(e)}'}), 500
 
@@ -75,11 +92,13 @@ def analyze_email_route():
 @app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint."""
-    return jsonify({'status': 'healthy', 'service': 'Email Phishing Analyzer'}), 200
+    return jsonify({'status': 'healthy', 'service': 'Email Phishing Analyzer - Integrated ML + Rule-Based Analysis'}), 200
 
 
 if __name__ == "__main__":
     print("🚀 Starting Email Phishing Analyzer Web Server")
-    print("📱 POST email files to: http://localhost:5000/analyze-email")
+    print("� Features: ML-based URL analysis + Transformer email body + Rule-based phishingtool checks")
+    print("📱 POST email files to: http://localhost:5000/analyze_email_route")
+    print("💚 GET health check: http://localhost:5000/health")
     print("Press CTRL+C to stop the server\n")
     serve(app, host='0.0.0.0', port=5000)

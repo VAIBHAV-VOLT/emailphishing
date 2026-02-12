@@ -38,39 +38,6 @@ def calculate_metadata_score(metadata):
     return min(score, 10)
 
 
-def calculate_url_score(urls):
-    """
-    Calculate phishing score based on URLs in email body.
-    
-    :param urls: list of URLs from analyzer
-    :return: score (0-10)
-    """
-    score = 0
-    
-    if not urls:
-        return 0
-    
-    # Multiple URLs can indicate phishing
-    if len(urls) > 3:
-        score += 1.5
-    
-    # Check for suspicious domains
-    suspicious_keywords = ['secure', 'verify', 'confirm', 'update', 'validate', 'account']
-    for url in urls:
-        domain = url.get("domain", "").lower()
-        for keyword in suspicious_keywords:
-            if keyword in domain:
-                score += 1
-                break
-    
-    # Check for mismatched URLs (display text vs actual URL)
-    for url in urls:
-        if url.get("scheme") == "http":  # Non-HTTPS
-            score += 0.5
-    
-    return min(score, 10)
-
-
 def calculate_ip_score(ip_analysis):
     """
     Calculate phishing score based on IP analysis.
@@ -94,44 +61,45 @@ def calculate_ip_score(ip_analysis):
     return min(score, 10)
 
 
-def calculate_security_check_score(urls):
+def calculate_url_security_score(email_body):
     """
-    Calculate phishing score based on security checks (SPF, DMARC, domain reputation).
+    Calculate phishing score based on ML model for URL authenticity.
+    Much faster than DNS-based analysis (DNS queries removed).
     
-    :param urls: list of URLs from analyzer
-    :return: score (0-10)
+    :param email_body: email body text from analyzer
+    :return: tuple (overall_score, spf_results, dmarc_results, dkim_results)
     """
+    if not email_body:
+        return 0, [], [], []
+    
+    from url_analyzer import extract_urls, has_spf, has_dmarc, has_dkim
+    from url_ml_analyzer import get_url_security_score_from_ml
+    
+    urls = extract_urls(email_body)
     if not urls:
-        return 0
+        return 0, [], [], []
     
-    from security_check import analyze_domain, get_domain
+    # Use ML model for fast URL authenticity scoring
+    url_score, ml_details = get_url_security_score_from_ml(urls)
     
-    score = 0
-    total_domains = len(urls)
-    risky_domains = 0
+    # Still check DNS auth records (cached and fast) for reporting
+    spf_results = []
+    dmarc_results = []
+    dkim_results = []
     
-    for url_data in urls:
-        url = url_data.get("full_url", "")
+    for url in urls:
+        from url_analyzer import get_domain
         domain = get_domain(url)
-        
-        domain_score, verdict, spf, dmarc, suspicious, unknown = analyze_domain(domain)
-        
-        # Map domain score to risk contribution
-        if verdict == "Phishing":
-            risky_domains += 1
-        elif verdict == "Suspicious":
-            risky_domains += 0.5
+        spf_results.append(has_spf(domain))
+        dmarc_results.append(has_dmarc(domain))
+        dkim_results.append(has_dkim(domain))
     
-    # Calculate percentage of risky domains
-    if total_domains > 0:
-        score = min((risky_domains / total_domains) * 10, 10)
-    
-    return score
+    return url_score, spf_results, dmarc_results, dkim_results
 
 
-def calculate_url_analyzer_score(email_body):
+def calculate_transformer_score(email_body):
     """
-    Calculate phishing score based on advanced URL analysis.
+    Calculate phishing score using Hugging Face transformer model.
     
     :param email_body: email body text from analyzer
     :return: score (0-10)
@@ -139,19 +107,25 @@ def calculate_url_analyzer_score(email_body):
     if not email_body:
         return 0
     
-    from url_analyzer import analyze_email_urls
+    from huggingface_analyzer import get_transformer_score
     
-    url_result = analyze_email_urls(email_body)
-    total_urls = url_result.get("total_urls", 0)
-    suspicious_urls = url_result.get("suspicious_count", 0)
+    score = get_transformer_score(email_body)
+    return min(score, 10)
+
+
+def calculate_url_analyzer_score(email_body):
+    """
+    Calculate phishing score based on unified URL security analysis.
+    Uses the consolidated url_analyzer module.
     
-    if total_urls == 0:
+    :param email_body: email body text from analyzer
+    :return: score (0-10)
+    """
+    if not email_body:
         return 0
     
-    # Calculate percentage of suspicious URLs
-    score = min((suspicious_urls / total_urls) * 10, 10)
-    
-    return score
+    url_score, _, _, _ = calculate_url_security_score(email_body)
+    return min(url_score, 10)
 
 
 def calculate_phishing_score(email_result, ip_analysis):
@@ -164,41 +138,45 @@ def calculate_phishing_score(email_result, ip_analysis):
     """
     
     metadata = email_result.get("metadata", {})
-    urls = email_result.get("urls", [])
     body = email_result.get("body", "")
     
     # Calculate individual component scores
     metadata_score = calculate_metadata_score(metadata)
-    url_score = calculate_url_score(urls)
     ip_score = calculate_ip_score(ip_analysis)
-    security_check_score = calculate_security_check_score(urls)
-    url_analyzer_score = calculate_url_analyzer_score(body)
+    url_score, spf_results, dmarc_results, dkim_results = calculate_url_security_score(body)
+    transformer_score = calculate_transformer_score(body)
     
     # Weighted average
-    # Security Check: 28%, URL Analyzer: 28%, Metadata: 28%, IP: 16%
+    # URL/Security: 30%, Transformer: 25%, Metadata: 25%, IP: 20%
     overall_score = (
-        (security_check_score * 0.28) +
-        (url_analyzer_score * 0.28) +
-        (metadata_score * 0.28) +
-        (ip_score * 0.16)
+        (url_score * 0.30) +
+        (transformer_score * 0.25) +
+        (metadata_score * 0.25) +
+        (ip_score * 0.20)
     )
+    
+    # Determine if SPF, DMARC, DKIM are present (any True in results means present)
+    spf_present = any(spf_results) if spf_results else False
+    dmarc_present = any(dmarc_results) if dmarc_results else False
+    dkim_present = any(dkim_results) if dkim_results else False
     
     return {
         "overall_score": round(overall_score, 2),
         "risk_level": get_risk_level(overall_score),
+        "spf": spf_present,
+        "dmarc": dmarc_present,
+        "dkim": dkim_present,
+        "originating_ip": ip_analysis.get("originating_ip"),
         "component_scores": {
-            "security_check_score": security_check_score,
-            "url_analyzer_score": url_analyzer_score,
+            "url_security_score": url_score,
+            "transformer_score": transformer_score,
             "metadata_score": metadata_score,
-            "ip_score": ip_score,
-            "url_score": url_score
+            "ip_score": ip_score
         },
         "details": {
             "header_mismatch": metadata.get("reply_to_mismatch", False),
             "domain_mismatch": metadata.get("from_domain") != metadata.get("return_path_domain"),
-            "originating_ip": ip_analysis.get("originating_ip"),
             "total_ips_found": len(ip_analysis.get("ips", [])),
-            "urls_found": len(urls)
         }
     }
 
@@ -259,24 +237,23 @@ if __name__ == "__main__":
     print("PHISHING RISK ASSESSMENT REPORT")
     print("=" * 60)
     
-    print(f"\n📊 OVERALL RISK SCORE: {phishing_score['overall_score']}/10")
+    print(f"\n📊 OVERALL SCORE: {phishing_score['overall_score']}/10")
     print(f"🚨 RISK LEVEL: {phishing_score['risk_level']}")
     
-    print("\n📈 COMPONENT SCORES:")
+    print("\n� COMPONENT SCORES:")
     scores = phishing_score['component_scores']
-    print(f"  • Security Check Score: {scores['security_check_score']}")
-    print(f"  • URL Analyzer Score: {scores['url_analyzer_score']}")
+    print(f"  • URL Security Score: {scores['url_security_score']}")
+    print(f"  • Transformer (AI Model): {scores['transformer_score']}")
     print(f"  • Metadata Score: {scores['metadata_score']}")
     print(f"  • IP Analysis Score: {scores['ip_score']}")
-    print(f"  • URL Analysis Score: {scores['url_score']}")
     
-    print("\n🔍 KEY DETAILS:")
-    details = phishing_score['details']
-    print(f"  • Header Mismatch: {details['header_mismatch']}")
-    print(f"  • Domain Mismatch: {details['domain_mismatch']}")
-    print(f"  • Originating IP: {details['originating_ip']}")
-    print(f"  • Total IPs Found: {details['total_ips_found']}")
-    print(f"  • URLs Found: {details['urls_found']}")
+    print("\n�🔐 AUTHENTICATION RECORDS:")
+    print(f"  • SPF: {phishing_score['spf']}")
+    print(f"  • DMARC: {phishing_score['dmarc']}")
+    print(f"  • DKIM: {phishing_score['dkim']}")
+    
+    print("\n🌐 NETWORK INFORMATION:")
+    print(f"  • Originating IP: {phishing_score['originating_ip']}")
     
     print("\n" + "=" * 60)
     

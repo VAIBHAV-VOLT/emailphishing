@@ -1,0 +1,100 @@
+{
+  "timestamp": "2026-02-13T03:51:36.567132",
+  "assessment": {
+    "overall_score": 5.21,
+    "risk_level": "MEDIUM",
+    "spf": false,
+    "dmarc": false,
+    "dkim": false,
+    "originating_ip": "2a01:111:e400:7e0a::50",
+    "component_scores": {
+      "url_security_score": 10,
+      "transformer_score": 9.7,
+      "metadata_score": 1.5,
+      "ip_score": 1.5,
+      "ml_combined_score": 5.95,
+      "phishingtool_score": 3.5,
+      "auth_score": 0,
+      "domain_score": 0,
+      "url_score": 1.5,
+      "attachment_score": 0,
+      "infrastructure_score": 1.0,
+      "header_score": 1.0,
+      "timing_score": 0,
+      "mime_score": 0
+    },
+    "details": {
+      "header_mismatch": false,
+      "domain_mismatch": false,
+      "total_ips_found": 8
+    },
+    "phishingtool_results": {
+      "authentication": {
+        "spf_fail": false,
+        "dkim_fail": false,
+        "dmarc_fail": false,
+        "auth_suspicious": false
+      },
+      "infrastructure": {
+        "originating_ip": null,
+        "relay_count": 0,
+        "private_ip_present": false,
+        "helo_mismatch": false,
+        "relay_anomaly": true,
+        "infrastructure_suspicious": true
+      },
+      "mime": {
+        "mime_type": "multipart/mixed",
+        "is_multipart": true,
+        "mime_part_count": 6,
+        "encodings_used": [
+          "quoted-printable"
+        ],
+        "suspicious_encoding": false
+      },
+      "domain": {
+        "reply_to_mismatch": false,
+        "return_path_mismatch": null,
+        "message_id_mismatch": null,
+        "suspicious_tld": false,
+        "spoofed_domain_pattern": false,
+        "domain_suspicious": false
+      },
+      "url": {
+        "total_urls": 3,
+        "ip_based_url": false,
+        "suspicious_tld_url": false,
+        "long_url_detected": true,
+        "too_many_subdomains": false,
+        "insecure_http": true,
+        "url_suspicious": true
+      },
+      "attachment": {
+        "attachment_count": 0,
+        "dangerous_extension": false,
+        "double_extension": false,
+        "macro_file": false,
+        "filenames": [],
+        "attachment_suspicious": false
+      },
+      "header": {
+        "missing_headers": [
+          "from"
+        ],
+        "duplicate_headers": [
+          "received"
+        ],
+        "invalid_message_id": false,
+        "unusually_long_headers": [],
+        "header_suspicious": true
+      },
+      "timing": {
+        "timestamp_count": 0,
+        "time_travel_detected": false,
+        "total_delivery_seconds": null,
+        "suspicious_delivery_time": false,
+        "timing_suspicious": false
+      }
+    }
+  }
+}
