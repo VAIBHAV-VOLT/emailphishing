@@ -16,8 +16,22 @@
 .animate-fadeIn {
   animation: fadeIn 0.6s ease-out;
 }
+
 :root {
-  color-scheme: light dark;
+  /* Light, bright default theme */
+  color-scheme: light;
+
+  /* Core layout tokens */
+  --bg-color: #f5f7ff;
+  --card-bg: #ffffff;
+
+  /* Brand accents (blue / purple) */
+  --primary-color: #4f46e5;
+  --secondary-color: #7c3aed;
+
+  /* Typography */
+  --text-color: #020617;
+  --muted-text: #6b7280;
 }
 
 html,
@@ -27,18 +41,12 @@ body,
 }
 
 body {
-  /* Gmail-like light background */
-  background-color: #f6f8fc;
-  color: #020617; /* text-slate-900 */
+  /* Light SaaS-style background */
+  background-color: var(--bg-color);
+  color: var(--text-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Inter',
     'SF Pro Text', ui-sans-serif, sans-serif;
-}
-
-html.dark body {
-  /* Gmail-like dark background */
-  background-color: #0f172a;
-  color: #f8fafc; /* text-slate-50 */
 }

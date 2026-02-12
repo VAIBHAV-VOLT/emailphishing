@@ -66,7 +66,7 @@ def analyze_email_route():
 @app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint."""
-    return jsonify({'status': 'healthy', 'service': 'Email Phishing Analyzer'}), 200
+    return jsonify({'status': 'healthy', 'service': 'Email Phishing Analyzer with RoBERTa Model'}), 200
 
 
 if __name__ == "__main__":

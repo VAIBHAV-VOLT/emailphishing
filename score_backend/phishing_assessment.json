@@ -1,24 +1,22 @@
 {
-  "timestamp": "2026-02-12T22:48:42.433796",
+  "timestamp": "2026-02-13T03:09:28.629092",
   "assessment": {
-    "overall_score": 5.33,
-    "risk_level": "MEDIUM",
+    "overall_score": 6.1,
+    "risk_level": "HIGH",
     "spf": false,
     "dmarc": false,
     "dkim": false,
     "originating_ip": "2a01:111:e400:7e0a::50",
     "component_scores": {
-      "security_check_score": 10.0,
-      "url_analyzer_score": 6.666666666666666,
+      "url_security_score": 10,
+      "transformer_score": 9.7,
       "metadata_score": 1.5,
-      "ip_score": 1.5,
-      "url_score": 1.0
+      "ip_score": 1.5
     },
     "details": {
       "header_mismatch": false,
       "domain_mismatch": false,
-      "total_ips_found": 8,
-      "urls_found": 3
+      "total_ips_found": 8
     }
   }
 }
