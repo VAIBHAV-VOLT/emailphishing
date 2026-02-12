@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """
 Email Phishing Analyzer - Flask Web Server
-Analyzes email files for phishing risk using multiple analyzers
+Analyzes email files for phishing risk using:
+- Hugging Face RoBERTa model (email body analysis)
+- Security checks (SPF, DMARC, DKIM)
+- URL analysis
+- Infrastructure analysis
+- Metadata verification
 """
 
 import sys
@@ -55,7 +60,7 @@ def analyze_email_route():
             email_result = analyze_email(temp_path)
             ip_analysis = analyze_received_headers(msg)
             
-            # Calculate score
+            # Calculate score (includes Hugging Face RoBERTa model)
             phishing_score = calculate_phishing_score(email_result, ip_analysis)
             
             # Return simplified JSON with only requested attributes
@@ -65,7 +70,8 @@ def analyze_email_route():
                 "spf": phishing_score.get("spf"),
                 "dmarc": phishing_score.get("dmarc"),
                 "dkim": phishing_score.get("dkim"),
-                "originating_ip": phishing_score.get("originating_ip")
+                "originating_ip": phishing_score.get("originating_ip"),
+                "component_scores": phishing_score.get("component_scores")
             }
             
             return jsonify(response), 200
@@ -85,11 +91,12 @@ def analyze_email_route():
 @app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint."""
-    return jsonify({'status': 'healthy', 'service': 'Email Phishing Analyzer'}), 200
+    return jsonify({'status': 'healthy', 'service': 'Email Phishing Analyzer with RoBERTa Model'}), 200
 
 
 if __name__ == "__main__":
     print("🚀 Starting Email Phishing Analyzer Web Server")
     print("📱 POST email files to: http://localhost:5000/analyze-email")
+    print("🤖 Using Hugging Face RoBERTa model for content analysis")
     print("Press CTRL+C to stop the server\n")
     app.run(debug=True, host='localhost', port=5000)
