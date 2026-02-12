@@ -17,20 +17,19 @@ if not api_key:
 client = genai.Client(api_key=api_key)
 
 
+def analyze_with_ai(originating_ip):
+    """
+    Analyze an originating IP using Gemini AI to determine if it's related to phishing.
 
-def analyze(data):
-    ip = data.get('ips','')
-    original = data.get('originating_ip','')
-
-
-
+    :param originating_ip: the IP address to analyze
+    :return: dict with originating_ip and phishing result (True/False)
+    """
     model = "gemini-2.0-flash"
     contents = [
-        types.Content(role="user", parts=[types.Part.from_text(text=f"Please tell me if the following ip address is related to phishing through emails.\nip:\n{original}\n\nAnswer only in yes or no in lower case")]), 
-        ]
+        types.Content(role="user", parts=[types.Part.from_text(text=f"Please tell me if the following ip address is related to phishing through emails.\nip:\n{originating_ip}\n\nAnswer only in yes or no in lower case")]), 
+    ]
 
     generate_content_config = types.GenerateContentConfig()
-
 
     response_text = ""
     try:
@@ -41,12 +40,26 @@ def analyze(data):
     except Exception as e:
         return {"error": str(e)}
     
-    if(response_text.lower()=='yes'):
-        res = True
-    else:
-        res = False
+    is_phishing = response_text.lower().strip() == 'yes'
 
     return {
-        "originating_ip": original,
-        'phishing': res
+        "originating_ip": originating_ip,
+        'phishing': is_phishing,
+        'ai_response': response_text
     }
+
+
+def analyze(data):
+    """
+    Analyze email data with IPs using AI.
+
+    :param data: dict with 'ips' and 'originating_ip' keys
+    :return: analysis result
+    """
+    ips = data.get('ips', '')
+    original = data.get('originating_ip', '')
+
+    if not original:
+        return {"error": "No originating IP provided"}
+
+    return analyze_with_ai(original)
