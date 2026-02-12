@@ -58,7 +58,17 @@ def analyze_email_route():
             # Calculate score
             phishing_score = calculate_phishing_score(email_result, ip_analysis)
             
-            return jsonify(phishing_score), 200
+            # Return simplified JSON with only requested attributes
+            response = {
+                "overall_score": phishing_score.get("overall_score"),
+                "risk_level": phishing_score.get("risk_level"),
+                "spf": phishing_score.get("spf"),
+                "dmarc": phishing_score.get("dmarc"),
+                "dkim": phishing_score.get("dkim"),
+                "originating_ip": phishing_score.get("originating_ip")
+            }
+            
+            return jsonify(response), 200
             
         finally:
             # Clean up temp file
