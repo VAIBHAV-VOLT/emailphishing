@@ -1,57 +1,57 @@
-import React from 'react';
-import { useDarkMode } from '../context/DarkModeContext.jsx';
+import React from "react";
+import { useDarkMode } from "../context/DarkModeContext.jsx";
 
 const Header = () => {
   const { isDark, toggleDarkMode } = useDarkMode();
 
   return (
-    <header className="w-full border-b border-slate-200/70 bg-white/70 backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-900/70">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-500 via-purple-500 to-emerald-400 shadow-lg shadow-blue-500/40">
-            <span className="text-lg font-black text-white">EA</span>
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-sm dark:border-slate-800/80 dark:bg-[#111827]/95">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2.5 sm:py-3">
+
+        {/* Logo */}
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1a73e8] text-white font-semibold">
+            EA
           </div>
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight sm:text-xl">
-              Email Risk Analyzer
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Upload .eml files to detect phishing & spam risk
-            </p>
+          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
+            Email Risk Analyzer
+          </h1>
+        </div>
+
+        {/* Search Bar */}
+        <div className="hidden flex-1 max-w-xl sm:flex">
+          <div className="flex w-full items-center gap-2 rounded-full bg-[#eef3fc] px-4 py-2 text-sm text-slate-600 shadow-inner dark:bg-[#1f2937] dark:text-slate-200">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 opacity-70"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+              />
+            </svg>
+            <span className="opacity-70 text-[13px]">Search analyzed emails…</span>
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={toggleDarkMode}
-          className="group relative inline-flex h-9 w-16 items-center rounded-full border border-slate-300/80 bg-white/70 px-1 shadow-sm shadow-slate-300/60 backdrop-blur-md transition-all duration-300 hover:border-blue-500/70 hover:shadow-md hover:shadow-blue-500/30 dark:border-slate-700/80 dark:bg-slate-900/70 dark:shadow-none dark:hover:border-blue-400/80"
-          aria-label="Toggle dark mode"
-        >
-          <span
-            className={`pointer-events-none absolute inset-y-0 flex w-1/2 items-center justify-center text-[10px] font-semibold tracking-wide ${
-              !isDark
-                ? 'text-blue-600 opacity-90'
-                : 'text-slate-400 opacity-40'
-            }`}
+        {/* Right Controls */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={toggleDarkMode}
+            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
           >
-            LT
-          </span>
-          <span
-            className={`pointer-events-none absolute inset-y-0 right-0 flex w-1/2 items-center justify-center text-[10px] font-semibold tracking-wide ${
-              isDark
-                ? 'text-amber-300 opacity-90'
-                : 'text-slate-400 opacity-40'
-            }`}
-          >
-            DK
-          </span>
+            {isDark ? "Light" : "Dark"}
+          </button>
 
-          <span
-            className={`h-7 w-7 rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-emerald-400 shadow-md shadow-blue-500/40 transition-transform duration-300 ${
-              isDark ? 'translate-x-7' : 'translate-x-0'
-            }`}
-          />
-        </button>
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-sm font-bold text-slate-700 dark:bg-slate-700 dark:text-slate-200">
+            DK
+          </div>
+        </div>
       </div>
     </header>
   );

@@ -137,12 +137,12 @@ const EmailAnalyzer = () => {
   };
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-semibold tracking-tight sm:text-xl">
+    <div className="space-y-6">
+      <div className="flex flex-col gap-1.5">
+        <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
           Upload an email and check its risk
         </h2>
-        <p className="max-w-2xl text-xs text-slate-500 dark:text-slate-400">
+        <p className="max-w-2xl text-sm text-slate-600 dark:text-slate-400">
           Select a raw <span className="font-semibold">.eml</span> file from
           your inbox to quickly see who sent it, how trustworthy it looks, and
           how risky it might be.
