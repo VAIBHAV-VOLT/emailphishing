@@ -63,7 +63,8 @@ def calculate_ip_score(ip_analysis):
 
 def calculate_url_security_score(email_body):
     """
-    Calculate phishing score based on unified URL and DNS security analysis.
+    Calculate phishing score based on ML model for URL authenticity.
+    Much faster than DNS-based analysis (DNS queries removed).
     
     :param email_body: email body text from analyzer
     :return: tuple (overall_score, spf_results, dmarc_results, dkim_results)
@@ -71,34 +72,29 @@ def calculate_url_security_score(email_body):
     if not email_body:
         return 0, [], [], []
     
-    from url_analyzer import extract_urls, analyze_url, has_spf, has_dmarc, has_dkim
+    from url_analyzer import extract_urls, has_spf, has_dmarc, has_dkim
+    from url_ml_analyzer import get_url_security_score_from_ml
     
     urls = extract_urls(email_body)
     if not urls:
         return 0, [], [], []
     
+    # Use ML model for fast URL authenticity scoring
+    url_score, ml_details = get_url_security_score_from_ml(urls)
+    
+    # Still check DNS auth records (cached and fast) for reporting
     spf_results = []
     dmarc_results = []
     dkim_results = []
-    total_score = 0
     
     for url in urls:
-        # Get unified analysis
-        report = analyze_url(url)
-        
-        # Collect DNS auth results
-        spf_results.append(has_spf(report.domain))
-        dmarc_results.append(has_dmarc(report.domain))
-        dkim_results.append(has_dkim(report.domain))
-        
-        # Accumulate score
-        total_score += report.score
+        from url_analyzer import get_domain
+        domain = get_domain(url)
+        spf_results.append(has_spf(domain))
+        dmarc_results.append(has_dmarc(domain))
+        dkim_results.append(has_dkim(domain))
     
-    # Average score across URLs
-    average_score = (total_score / len(urls)) if urls else 0
-    final_score = min(average_score, 10)
-    
-    return final_score, spf_results, dmarc_results, dkim_results
+    return url_score, spf_results, dmarc_results, dkim_results
 
 
 def calculate_transformer_score(email_body):
