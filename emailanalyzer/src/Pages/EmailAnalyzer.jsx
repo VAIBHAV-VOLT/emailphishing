@@ -1,10 +1,9 @@
 import { useState } from "react";
-import Header from "../Components/Header";
 import FileUpload from "../Components/FileUpload";
 import Loader from "../Components/Loader";
 import ResultCard from "../Components/ResultCard";
 
-const BACKEND_URL = "http://localhost:5000/analyze-email";
+const BACKEND_URL = "http://localhost:5000//analyze_email_route";
 
 function EmailAnalyzer() {
     const [selectedFile, setSelectedFile] = useState(null);
