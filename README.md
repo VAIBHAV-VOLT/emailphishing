@@ -2,19 +2,10 @@
 
 Phishing attacks are evolving rapidly.
 
-Today’s attackers use:
-
-⚠ AI-generated emails
-
-⚠ Social engineering tactics
-
-⚠ Spoofed domains
-
-⚠ Urgency & fear manipulation
-
 Traditional spam filters fail against intelligent phishing attempts.
 
 We needed something smarter.
+
 We built PhisHawk.
 
 💡 THE SOLUTION — PHISHAWK
@@ -196,10 +187,14 @@ PhisHawk becomes more relevant than ever.
 
 👥 TEAM PHISBUSTERS
 
-Abhinav Gupta
-Vaibhav
-Rahul Nalla
-Sumrit Singh
-Eklavya Rajput
+-Abhinav Gupta
+
+-Vaibhav
+
+-Rahul Nalla
+
+-Sumrit Singh
+
+-Eklavya Rajput
 
 Built with ⚡ passion for AI & Cybersecurity.
