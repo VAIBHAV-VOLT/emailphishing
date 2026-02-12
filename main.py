@@ -6,6 +6,7 @@ Analyzes email files for phishing risk using multiple analyzers
 
 import sys
 import os
+from flask_cors import CORS
 from flask import Flask, request, jsonify
 from datetime import datetime
 
@@ -14,6 +15,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'score_backend'))
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
