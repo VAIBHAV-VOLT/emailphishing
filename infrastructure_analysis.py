@@ -96,6 +96,7 @@ def analyze_received_headers(msg: Message):
 if __name__ == "__main__":
     # Import here to avoid circular imports
     from analyzer import analyze_email, load_email
+    from original_ip_analysis import analyze_with_ai
     
     # Analyze email from analyzer
     email_result = analyze_email("email2.eml")
@@ -110,11 +111,19 @@ if __name__ == "__main__":
     print(f"All IPs found: {ip_analysis['ips']}")
     print(f"Originating IP: {ip_analysis['originating_ip']}")
     
-    print("\n=== EMAIL METADATA ===")
+    # Analyze originating IP with AI for phishing detection
+    """if ip_analysis['originating_ip']:
+        print("\n=== AI PHISHING ANALYSIS ===")
+        ai_result = analyze_with_ai(ip_analysis['originating_ip'])
+        print(f"Originating IP: {ai_result['originating_ip']}")
+        print(f"Phishing Related: {ai_result['phishing']}")
+        print(f"AI Response: {ai_result['ai_response']}")"""
+    
+    """print("\n=== EMAIL METADATA ===")
     for key, value in email_result["metadata"].items():
         print(f"{key}: {value}")
     
     print("\n=== URLS FOUND ===")
     for url in email_result["urls"]:
-        print(url)
+        print(url)"""
 
