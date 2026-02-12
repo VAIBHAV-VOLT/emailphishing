@@ -34,7 +34,6 @@ function EmailAnalyzer() {
     return (
         <div className={darkMode ? "dark" : ""}>
             <div className="min-h-screen bg-linear-to-br from-indigo-100 to-purple-200 dark:from-slate-900 dark:to-slate-800 transition">
-                <Header darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} />
 
                 <main className="flex flex-col items-center gap-6 p-6">
                     <FileUpload
