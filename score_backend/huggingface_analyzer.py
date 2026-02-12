@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 
 # Initialize the phishing detection pipeline
 # Using a model trained on email spam/phishing detection
-MODEL_NAME = "michellejieli/ELECTRA_finetuned_SpamDetection"
+MODEL_NAME = "mariagrandury/roberta-base-finetuned-sms-spam-detection"
 
 try:
     # Load pre-trained model specifically for spam/phishing detection
