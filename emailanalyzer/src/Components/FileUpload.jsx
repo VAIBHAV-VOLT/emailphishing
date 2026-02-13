@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { UploadCloud } from 'lucide-react';
 
 const FileUpload = ({
   selectedFile,
@@ -57,17 +56,17 @@ const FileUpload = ({
   const disabled = !selectedFile || isLoading;
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 mx-5">
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`group relative flex min-h-[260px] cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] sm:p-10 lg:min-h-[300px] lg:p-12 ${
-          isDragging
-            ? 'border-indigo-500 bg-indigo-50/80 shadow-inner'
-            : 'border-slate-300 bg-slate-50/90 hover:border-indigo-400 hover:bg-indigo-50/50 shadow-md'
-        }`}
+        className={`group relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-white/70 p-6 text-center shadow-sm shadow-slate-200/70 backdrop-blur-xl transition-all duration-300 dark:bg-slate-900/70 dark:shadow-black/40 ${isDragging
+          ? 'border-blue-500/90 bg-blue-50/60 dark:border-blue-400/90 dark:bg-slate-900/80'
+          : 'border-slate-300/70 hover:border-blue-500/70 hover:bg-blue-50/40 dark:border-slate-700/80 dark:hover:border-blue-400/80 dark:hover:bg-slate-900/80'
+          }`}
       >
+        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-linear-to-tr from-blue-500/10 via-purple-500/10 to-emerald-400/10 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
 
         <input
           type="file"
@@ -76,31 +75,43 @@ const FileUpload = ({
           className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
         />
 
-        <div className="relative z-20 flex flex-col items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-400/70 ring-4 ring-white/70">
-            <UploadCloud className="h-8 w-8" />
+        <div className="relative z-20 flex flex-col items-center gap-3">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-tr from-blue-500 via-purple-500 to-emerald-400 text-white shadow-md shadow-blue-500/40">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-7 w-7"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M4 4h16v16H4z" />
+              <path d="M4 7.5 12 13l8-5.5" />
+            </svg>
           </div>
 
           <div>
-            <p className="text-xl font-bold text-slate-800 sm:text-2xl">
-              Drag &amp; drop your <span className="text-indigo-600">.eml</span>{' '}
+            <p className="text-sm font-medium">
+              Drop your <span className="font-semibold">.eml</span>{' '}
               file here
             </p>
-            <p className="mt-2 text-sm text-slate-600 sm:text-base">
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Or click to browse. We only accept raw email files (.eml).
             </p>
           </div>
 
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-600 shadow-sm shadow-slate-200/80">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-50/80 px-3 py-1 text-[11px] font-medium text-slate-600 shadow-sm shadow-slate-200/80 dark:bg-slate-800/80 dark:text-slate-300 dark:shadow-black/40">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
             <span>
               Selected:{' '}
               {selectedFile ? (
-                <span className="font-semibold text-slate-800">
+                <span className="font-semibold text-slate-800 dark:text-slate-100">
                   {selectedFile.name}
                 </span>
               ) : (
-                <span className="italic text-slate-400">
+                <span className="italic text-slate-400 dark:text-slate-500">
                   No file yet
                 </span>
               )}
@@ -115,21 +126,20 @@ const FileUpload = ({
         </p>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <p className="text-sm text-slate-600 sm:text-[15px]">
-          Make sure your email analysis server is running before you click
-          <span className="font-semibold text-slate-800"> Analyze Email</span>.
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          Your file is ready. Click <span className="font-semibold">Analyze</span> to continue.
         </p>
+
 
         <button
           type="button"
           onClick={onAnalyze}
           disabled={disabled}
-          className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-10 py-4.5 text-base font-semibold tracking-tight shadow-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-color)] focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 sm:w-auto sm:px-12 sm:text-lg lg:px-14 lg:py-5 ${
-            disabled
-              ? 'cursor-not-allowed bg-slate-300 text-slate-600 shadow-none'
-              : 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-indigo-400/80 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98]'
-          }`}
+          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold tracking-tight shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:focus-visible:ring-offset-slate-950 ${disabled
+            ? 'cursor-not-allowed bg-slate-300/70 text-slate-600 shadow-none dark:bg-slate-700/70 dark:text-slate-400'
+            : 'bg-linear-to-tr from-blue-500 via-purple-500 to-emerald-400 text-white shadow-blue-500/40 hover:shadow-md active:scale-[0.98]'
+            }`}
         >
           {isLoading && (
             <span className="inline-flex h-4 w-4 items-center justify-center">

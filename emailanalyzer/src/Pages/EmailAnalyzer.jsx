@@ -26,7 +26,13 @@ function EmailAnalyzer() {
         });
 
         const data = await res.json();
-        setResult(data);
+        if (!res.ok) {
+            setResult({ error: data?.error || "Request failed" });
+        } else if (data?.status === "success" && data?.data != null) {
+            setResult(data.data);
+        } else {
+            setResult(data?.data ?? data ?? null);
+        }
         setLoading(false);
     };
 
