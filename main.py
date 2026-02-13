@@ -60,6 +60,8 @@ def analyze_email_route():
                     'data': {
                         'overall_score': result['overall_score'],
                         'risk_level': result['risk_level'],
+                        'from_address': result.get('from_address'),
+                        'to_address': result.get('to_address'),
                         'spf': result['spf'],
                         'dmarc': result['dmarc'],
                         'dkim': result['dkim'],

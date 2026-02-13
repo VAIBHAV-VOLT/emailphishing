@@ -7,7 +7,7 @@ import sys
 import os
 
 # Add score_backend to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'score_backend'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'phishingtool'))
 
 print("=" * 60)
 print("PHISHING RISK ASSESSMENT REPORT")

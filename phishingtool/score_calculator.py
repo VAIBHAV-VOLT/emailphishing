@@ -535,6 +535,8 @@ def calculate_comprehensive_phishing_score(email_file_path):
             "dmarc": dmarc_present,
             "dkim": dkim_present,
             "originating_ip": ip_analysis.get("originating_ip"),
+            "from_address": metadata.get("from"),
+            "to_address": metadata.get("to"),
             "component_scores": {
                 "attachment_score": attachment_score,
                 "authentication_score": auth_score,

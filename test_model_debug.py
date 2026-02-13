@@ -2,7 +2,7 @@
 """Test script to debug the Hugging Face model output"""
 
 import sys
-sys.path.insert(0, 'score_backend')
+sys.path.insert(0, 'phishingtool')
 
 print('Testing Hugging Face model...\n')
 
