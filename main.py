@@ -55,6 +55,8 @@ def analyze_email_route():
 
             if result:
                 # Return result JSON with all component scores
+                from phishingtool.attachment_analyzer import analyze_eml
+                
                 response = {
                     'status': 'success',
                     'data': {
@@ -67,7 +69,8 @@ def analyze_email_route():
                         'dkim': result['dkim'],
                         'originating_ip': result['originating_ip'],
                         'component_scores': result.get('component_scores', {}),
-                        'details': result.get('details', {})
+                        'details': result.get('details', {}),
+                        'attachments': analyze_eml(file)
                     }
                 }
 

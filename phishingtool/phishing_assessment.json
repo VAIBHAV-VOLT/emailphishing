@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-13T04:50:14.828532",
+  "timestamp": "2026-02-13T07:31:36.976360",
   "assessment": {
     "overall_score": 2.31,
     "risk_level": "LOW",
@@ -7,6 +7,8 @@
     "dmarc": false,
     "dkim": false,
     "originating_ip": "2a01:111:e400:7e0a::50",
+    "from_address": null,
+    "to_address": "john smith <johnsmith123@gmail.com>",
     "component_scores": {
       "attachment_score": 0,
       "authentication_score": 2,

@@ -1,0 +1,39 @@
+From: attacker@example.com
+To: victim@example.com
+Subject: Urgent: Invoice Payment Required
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary123"
+
+--boundary123
+Content-Type: text/plain; charset="utf-8"
+
+Dear Customer,
+
+Please review the attached invoice and process payment immediately.
+Failure to do so may result in account suspension.
+
+Regards,
+Finance Team
+
+--boundary123
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename="invoice.pdf.exe"
+Content-Transfer-Encoding: base64
+
+VGhpcyBpcyBhIGR1bW15IGV4ZWN1dGFibGUgZmlsZSBmb3IgdGVzdGluZy4=
+
+--boundary123
+Content-Type: application/vnd.ms-word.document.macroEnabled.12
+Content-Disposition: attachment; filename="financial_report.docm"
+Content-Transfer-Encoding: base64
+
+VGhpcyBpcyBhIGR1bW15IG1hY3JvLWVuYWJsZWQgZG9jdW1lbnQu
+
+--boundary123
+Content-Type: image/jpeg
+Content-Disposition: attachment; filename="photo.jpg"
+Content-Transfer-Encoding: base64
+
+VGhpcyBpcyBhIGR1bW15IGltYWdlIGZpbGUu
+
+--boundary123--

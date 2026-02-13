@@ -676,6 +676,8 @@ if __name__ == "__main__":
         
         print(f"\n📊 OVERALL SCORE: {phishing_score['overall_score']}/10")
         print(f"🚨 RISK LEVEL: {phishing_score['risk_level']}")
+        print(f"🚨 To: {phishing_score['to_address']}")
+        print(f"🚨 From: {phishing_score['from_address']}")
         
         print("\n📋 DETAILED COMPONENT SCORES:")
         scores = phishing_score['component_scores']
@@ -693,6 +695,16 @@ if __name__ == "__main__":
         print(f"  • Domain Mismatch: {'⚠ Yes' if phishing_score['details']['domain_mismatch'] else '✓ No'}")
         print(f"  • Header Mismatch: {'⚠ Yes' if phishing_score['details']['header_mismatch'] else '✓ No'}")
         print(f"  • Total IPs Found: {phishing_score['details']['total_ips_found']}")
+
+        from attachment_analyzer import analyze_eml
+        test_data = analyze_eml("sample.eml")
+
+
+
+        for data in test_data:
+            print(f" {data}  \n" )
+        
+
         
         print("\n" + "=" * 70)
         
