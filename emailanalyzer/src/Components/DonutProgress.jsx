@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 const DonutProgress = ({ score = 0 }) => {
   const normalized = Math.max(0, Math.min(100, Number(score) || 0));
-  const radius = 52;
+  const radius = 58;
   const strokeWidth = 9;
   const circumference = 2 * Math.PI * radius;
 
@@ -40,9 +40,9 @@ const DonutProgress = ({ score = 0 }) => {
   const colors = getColorClasses(normalized);
 
   return (
-    <div className="relative flex h-40 w-40 items-center justify-center">
+    <div className="relative flex h-44 w-44 items-center justify-center">
       <svg
-        className="h-full w-full -rotate-90 text-slate-200 dark:text-slate-700"
+        className="h-full w-full -rotate-90 text-slate-200"
         viewBox="0 0 140 140"
       >
         <circle
@@ -68,22 +68,20 @@ const DonutProgress = ({ score = 0 }) => {
         />
       </svg>
 
-      <div className="pointer-events-none absolute inset-6 flex flex-col items-center justify-center rounded-full bg-white/90 text-center shadow-inner shadow-slate-200/90 dark:bg-[#0b1120]/95 dark:shadow-black/60">
-        <div className="relative mb-1 inline-flex items-center gap-2">
-          <span className="text-3xl font-bold tabular-nums">
-            {Math.round(normalized)}
+      <div className="pointer-events-none absolute inset-6 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner shadow-slate-200/90">
+        <div className="relative inline-flex flex-col items-center gap-0">
+          <span className="text-4xl font-bold tabular-nums text-slate-800 sm:text-5xl">
+            {Math.round(normalized)}%
           </span>
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+          <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
             RISK
           </span>
           <span
-            className={`absolute -right-2 -top-1 h-2.5 w-2.5 rounded-full ${colors.dot} shadow-sm shadow-slate-900/50`}
+            className={`absolute -right-1 -top-0.5 h-2.5 w-2.5 rounded-full ${colors.dot} shadow-sm shadow-slate-900/30`}
           />
         </div>
-        <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-          0 = safest, 100 = highest risk
-        </p>
       </div>
+
     </div>
   );
 };

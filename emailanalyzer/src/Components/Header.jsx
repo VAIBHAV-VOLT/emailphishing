@@ -1,56 +1,80 @@
-import React from "react";
-import { useDarkMode } from "../context/DarkModeContext.jsx";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
-  const { isDark, toggleDarkMode } = useDarkMode();
+  const location = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navClass = (path) =>
+    `transition-colors hover:text-white ${location.pathname === path ? "text-white font-semibold" : "text-slate-200"}`;
+
+  const mobileNavClass = (path) =>
+    `block rounded-lg px-4 py-3 text-[15px] font-medium ${location.pathname === path ? "bg-white/15 text-white" : "text-slate-200 hover:bg-white/10 hover:text-white"}`;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-sm dark:border-slate-800/80 dark:bg-[#111827]/95">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2.5 sm:py-3">
-
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1a73e8] text-white font-semibold">
-            EA
+    <header className="sticky top-0 z-40 w-full bg-slate-900 shadow-[0_2px_12px_rgba(0,0,0,0.15)]">
+      <div className="mx-auto flex min-h-[88px] w-full max-w-[1560px] items-center justify-between gap-6 px-4 py-4 sm:px-6 lg:px-10 xl:px-12">
+        {/* Logo / App name */}
+        <Link to="/" className="flex items-center gap-3">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-tr from-blue-500 via-purple-500 to-emerald-500 text-base font-bold text-white shadow-lg shadow-purple-900/40">
+            TL
           </div>
-          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
-            Email Risk Analyzer
-          </h1>
-        </div>
-
-        {/* Search Bar */}
-        <div className="hidden flex-1 max-w-xl sm:flex">
-          <div className="flex w-full items-center gap-2 rounded-full bg-[#eef3fc] px-4 py-2 text-sm text-slate-600 shadow-inner dark:bg-[#1f2937] dark:text-slate-200">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 opacity-70"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-              />
-            </svg>
-            <span className="opacity-70 text-[13px]">Search analyzed emails…</span>
+          <div className="flex flex-col">
+            <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl md:text-[26px]">
+              ThreatLens
+            </h1>
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-300 sm:text-sm">
+              Email Security
+            </span>
           </div>
-        </div>
+        </Link>
 
-        {/* Right Controls */}
-        <div className="flex items-center gap-3">
+        {/* Nav links */}
+        <nav className="hidden items-center gap-8 text-[15px] font-medium sm:flex">
+          <Link to="/upgrade" className={navClass("/upgrade")}>
+            Upgrade
+          </Link>
+          <Link to="/security-tips" className={navClass("/security-tips")}>
+            Security Tips
+          </Link>
+          <Link to="/help" className={navClass("/help")}>
+            Help
+          </Link>
+        </nav>
+
+        {/* Mobile menu */}
+        <div className="relative sm:hidden">
           <button
-            onClick={toggleDarkMode}
-            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+            type="button"
+            onClick={() => setMobileOpen((o) => !o)}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-white/10 text-slate-200"
+            aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
           >
-            {isDark ? "Light" : "Dark"}
+            {mobileOpen ? "✕" : "☰"}
           </button>
-
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-sm font-bold text-slate-700 dark:bg-slate-700 dark:text-slate-200">
-            DK
-          </div>
+          {mobileOpen && (
+            <>
+              <div
+                className="fixed inset-0 z-30"
+                aria-hidden="true"
+                onClick={() => setMobileOpen(false)}
+              />
+              <nav
+                className="absolute right-0 top-full z-40 mt-2 w-48 rounded-xl border border-white/20 bg-slate-900 py-2 shadow-xl"
+                aria-label="Mobile navigation"
+              >
+                <Link to="/upgrade" className={mobileNavClass("/upgrade")} onClick={() => setMobileOpen(false)}>
+                  Upgrade
+                </Link>
+                <Link to="/security-tips" className={mobileNavClass("/security-tips")} onClick={() => setMobileOpen(false)}>
+                  Security Tips
+                </Link>
+                <Link to="/help" className={mobileNavClass("/help")} onClick={() => setMobileOpen(false)}>
+                  Help
+                </Link>
+              </nav>
+            </>
+          )}
         </div>
       </div>
     </header>
