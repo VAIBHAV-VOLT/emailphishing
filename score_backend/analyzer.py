@@ -69,25 +69,32 @@ def extract_metadata(msg):
 # -------------------------------
 def decode_body(msg):
     body = ""
+    try:
+        if msg.is_multipart():
+            for part in msg.walk():
+                content_type = part.get_content_type()
+                content_disposition = str(part.get("Content-Disposition", ""))
 
-    if msg.is_multipart():
-        for part in msg.walk():
-            content_type = part.get_content_type()
-            content_disposition = str(part.get("Content-Disposition"))
+                if "attachment" in content_disposition:
+                    continue
 
-            if "attachment" in content_disposition:
-                continue
+                try:
+                    if content_type == "text/plain":
+                        body += part.get_content()
+                    elif content_type == "text/html":
+                        body += part.get_content()
+                except (KeyError, LookupError, UnicodeDecodeError, ValueError):
+                    pass
 
-            if content_type == "text/plain":
-                body += part.get_content()
+        else:
+            try:
+                body = msg.get_content()
+            except (KeyError, LookupError, UnicodeDecodeError, ValueError):
+                body = ""
+    except Exception:
+        body = ""
 
-            elif content_type == "text/html":
-                body += part.get_content()
-
-    else:
-        body = msg.get_content()
-
-    return body
+    return body if isinstance(body, str) else ""
 
 
 # -------------------------------

@@ -61,7 +61,7 @@ const FileUpload = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`group relative flex min-h-[420px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-white/70 p-8 text-center shadow-sm shadow-slate-200/70 backdrop-blur-xl transition-all duration-300 dark:bg-slate-900/70 dark:shadow-black/40 sm:min-h-[460px] ${isDragging
+        className={`group relative flex min-h-105 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-white/70 p-8 text-center shadow-sm shadow-slate-200/70 backdrop-blur-xl transition-all duration-300 dark:bg-slate-900/70 dark:shadow-black/40 sm:min-h-115 ${isDragging
           ? 'border-blue-500/90 bg-blue-50/60 dark:border-blue-400/90 dark:bg-slate-900/80'
           : 'border-slate-300/70 hover:border-blue-500/70 hover:bg-blue-50/40 dark:border-slate-700/80 dark:hover:border-blue-400/80 dark:hover:bg-slate-900/80'
           }`}

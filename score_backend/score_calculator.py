@@ -103,36 +103,37 @@ def calculate_security_check_score(urls):
     """
     if not urls:
         return 0, [], [], []
-    
-    from security_check import analyze_domain, get_domain
-    
+
+    try:
+        from security_check import analyze_domain, get_domain
+    except Exception:
+        return 0, [], [], []
+
     score = 0
     total_domains = len(urls)
     risky_domains = 0
     spf_results = []
     dmarc_results = []
     dkim_results = []
-    
+
     for url_data in urls:
-        url = url_data.get("full_url", "")
-        domain = get_domain(url)
-        
-        domain_score, verdict, spf, dmarc, dkim, suspicious, unknown = analyze_domain(domain)
-        
-        spf_results.append(spf)
-        dmarc_results.append(dmarc)
-        dkim_results.append(dkim)
-        
-        # Map domain score to risk contribution
-        if verdict == "Phishing":
-            risky_domains += 1
-        elif verdict == "Suspicious":
-            risky_domains += 0.5
-    
-    # Calculate percentage of risky domains
+        try:
+            url = url_data.get("full_url", "")
+            domain = get_domain(url)
+            domain_score, verdict, spf, dmarc, dkim, suspicious, unknown = analyze_domain(domain)
+            spf_results.append(spf)
+            dmarc_results.append(dmarc)
+            dkim_results.append(dkim)
+            if verdict == "Phishing":
+                risky_domains += 1
+            elif verdict == "Suspicious":
+                risky_domains += 0.5
+        except Exception:
+            pass
+
     if total_domains > 0:
         score = min((risky_domains / total_domains) * 10, 10)
-    
+
     return score, spf_results, dmarc_results, dkim_results
 
 
@@ -145,11 +146,12 @@ def calculate_transformer_score(email_body):
     """
     if not email_body:
         return 0
-    
-    from huggingface_analyzer import get_transformer_score
-    
-    score = get_transformer_score(email_body)
-    return min(score, 10)
+    try:
+        from huggingface_analyzer import get_transformer_score
+        score = get_transformer_score(email_body)
+        return min(score, 10)
+    except Exception:
+        return 0
 
 
 def calculate_url_analyzer_score(email_body):
@@ -161,20 +163,16 @@ def calculate_url_analyzer_score(email_body):
     """
     if not email_body:
         return 0
-    
-    from url_analyzer import analyze_email_urls
-    
-    url_result = analyze_email_urls(email_body)
-    total_urls = url_result.get("total_urls", 0)
-    suspicious_urls = url_result.get("suspicious_count", 0)
-    
-    if total_urls == 0:
+    try:
+        from url_analyzer import analyze_email_urls
+        url_result = analyze_email_urls(email_body)
+        total_urls = url_result.get("total_urls", 0)
+        suspicious_urls = url_result.get("suspicious_count", 0)
+        if total_urls == 0:
+            return 0
+        return min((suspicious_urls / total_urls) * 10, 10)
+    except Exception:
         return 0
-    
-    # Calculate percentage of suspicious URLs
-    score = min((suspicious_urls / total_urls) * 10, 10)
-    
-    return score
 
 
 def calculate_phishing_score(email_result, ip_analysis):

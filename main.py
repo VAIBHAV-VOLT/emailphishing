@@ -54,28 +54,33 @@ def analyze_email_route():
             from analyzer import analyze_email, load_email
             from infrastructure_analysis import analyze_received_headers
             from score_calculator import calculate_phishing_score
-            
+
             # Load and analyze
             msg = load_email(temp_path)
             email_result = analyze_email(temp_path)
             ip_analysis = analyze_received_headers(msg)
-            
+
             # Calculate score (includes Hugging Face RoBERTa model)
             phishing_score = calculate_phishing_score(email_result, ip_analysis)
-            
-            # Return simplified JSON with only requested attributes
+
+            metadata = email_result.get("metadata") or {}
             response = {
                 "overall_score": phishing_score.get("overall_score"),
                 "risk_level": phishing_score.get("risk_level"),
+                "from_address": metadata.get("from"),
+                "to_address": metadata.get("to"),
                 "spf": phishing_score.get("spf"),
                 "dmarc": phishing_score.get("dmarc"),
                 "dkim": phishing_score.get("dkim"),
                 "originating_ip": phishing_score.get("originating_ip"),
-                "component_scores": phishing_score.get("component_scores")
+                "component_scores": phishing_score.get("component_scores") or {},
+                "details": phishing_score.get("details") or {},
             }
-            
+
             return jsonify(response), 200
-            
+
+        except Exception as inner_e:
+            return jsonify({"error": str(inner_e)}), 500
         finally:
             # Clean up temp file
             if os.path.exists(temp_path):
