@@ -16,7 +16,7 @@ from flask import Flask, request, jsonify
 from datetime import datetime
 
 # Add score_backend to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'score_backend'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'phishingtool'))
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -53,7 +53,7 @@ def analyze_email_route():
             # Import analyzers
             from analyzer import analyze_email, load_email
             from infrastructure_analysis import analyze_received_headers
-            from score_calculator import calculate_phishing_score
+            from score_calculator import calculate_comprehensive_phishing_score
             
             # Load and analyze
             msg = load_email(temp_path)
@@ -61,7 +61,7 @@ def analyze_email_route():
             ip_analysis = analyze_received_headers(msg)
             
             # Calculate score (includes Hugging Face RoBERTa model)
-            phishing_score = calculate_phishing_score(email_result, ip_analysis)
+            phishing_score = calculate_comprehensive_phishing_score(email_result, ip_analysis)
             
             # Return simplified JSON with only requested attributes
             response = {
