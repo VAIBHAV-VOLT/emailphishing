@@ -16,7 +16,7 @@ from flask import Flask, request, jsonify
 from datetime import datetime
 
 # Add score_backend to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'score_backend'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'phishingtool'))
 
 # Initialize Flask app
 app = Flask(__name__)
