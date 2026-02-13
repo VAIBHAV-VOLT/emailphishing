@@ -13,11 +13,12 @@ const ResultCard = ({ result }) => {
     );
   }
 
-  const data = result || {};
+  // Support both nested (data) and flat response from backend
+  const data = result?.data != null ? result.data : result || {};
   const overall_score = data.overall_score;
   const risk_level = data.risk_level;
-  const from_address = data.from_address;
-  const to_address = data.to_address;
+  const from_address = data.from_address ?? data.from;
+  const to_address = data.to_address ?? data.to;
   const spf = data.spf;
   const dmarc = data.dmarc;
   const dkim = data.dkim;

@@ -17,23 +17,47 @@ function EmailAnalyzer() {
         setLoading(true);
         setResult(null);
 
-        const formData = new FormData();
-        formData.append("file", selectedFile);
+        try {
+            const formData = new FormData();
+            formData.append("file", selectedFile);
 
-        const res = await fetch(BACKEND_URL, {
-            method: "POST",
-            body: formData,
-        });
+            const res = await fetch(BACKEND_URL, {
+                method: "POST",
+                body: formData,
+            });
 
-        const data = await res.json();
-        if (!res.ok) {
-            setResult({ error: data?.error || "Request failed" });
-        } else if (data?.status === "success" && data?.data != null) {
-            setResult(data.data);
-        } else {
-            setResult(data?.data ?? data ?? null);
+            let data = null;
+            try {
+                const text = await res.text();
+                data = text ? JSON.parse(text) : {};
+            } catch (e) {
+                setResult({ error: "Invalid response from server" });
+                return;
+            }
+
+            if (!res.ok) {
+                setResult({ error: data?.error || "Request failed" });
+                return;
+            }
+
+            // Backend returns { status: 'success', data: { ... } } or direct { overall_score, ... }
+            const payload =
+                data?.status === "success" && data?.data != null
+                    ? data.data
+                    : data?.data ?? data;
+
+            if (payload && typeof payload === "object" && !payload.error) {
+                setResult(payload);
+            } else {
+                setResult({ error: data?.error || "No analysis data received" });
+            }
+        } catch (err) {
+            setResult({
+                error: err?.message || "Network error. Is the backend running on port 5000?",
+            });
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     useEffect(() => {
