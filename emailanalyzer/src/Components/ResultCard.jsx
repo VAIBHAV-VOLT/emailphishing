@@ -4,6 +4,14 @@ import { ShieldCheck, AlertTriangle, MailWarning, BarChart3 } from "lucide-react
 
 const ResultCard = ({ result }) => {
   if (result == null || typeof result !== "object") return null;
+  if (result.error) {
+    return (
+      <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-rose-800">
+        <p className="font-semibold">Something went wrong</p>
+        <p className="mt-2 text-sm">{String(result.error)}</p>
+      </div>
+    );
+  }
 
   const data = result || {};
   const overall_score = data.overall_score;
