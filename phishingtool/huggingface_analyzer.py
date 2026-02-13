@@ -10,11 +10,12 @@ warnings.filterwarnings('ignore')
 
 # Initialize the phishing detection pipeline
 # Using a model trained on email spam/phishing detection
-MODEL_NAME = "michellejieli/ELECTRA_finetuned_SpamDetection"
+# Changed to email-specific model instead of SMS-only
+MODEL_NAME = "mariagrandury/roberta-base-finetuned-sms-spam-detection"
 
 try:
     # Load pre-trained model specifically for spam/phishing detection
-    # This model is fine-tuned on spam email detection
+    # This model is fine-tuned on email/text spam detection
     classifier = pipeline(
         "text-classification",
         model=MODEL_NAME,
@@ -60,10 +61,28 @@ def analyze_email_body_with_transformers(email_body):
         confidence = results[0]['score']
         
         # Convert to phishing score (0-10)
-        # Model outputs: SPAM (high risk) or HAM (low risk)
-        if label.upper() == 'SPAM':
+        # Handle different label formats:
+        # - LABEL_0, LABEL_1 (numeric)
+        # - NEGATIVE, POSITIVE (text)
+        # - HAM, SPAM (text)
+        # - LABEL 0, LABEL 1 (text with space)
+        
+        is_positive = False
+        if label.upper() in ['LABEL_1', 'POSITIVE', 'SPAM', '1']:
+            is_positive = True
+        elif label.upper() in ['LABEL_0', 'NEGATIVE', 'HAM', '0']:
+            is_positive = False
+        else:
+            # Default: treat as positive if confidence is high
+            is_positive = confidence > 0.5
+        
+        # Calculate score
+        if is_positive:
+            # High confidence in positive (spam/phishing) = high risk
             model_score = confidence * 10
         else:
+            # Low confidence in negative (ham/legitimate) = low risk
+            # But if confidence is LOW in legitimate, it means HIGH risk
             model_score = (1 - confidence) * 10
         
         return {
@@ -81,6 +100,7 @@ def analyze_email_body_with_transformers(email_body):
 def analyze_email_body_fallback(email_body):
     """
     Fallback text analysis using heuristics if model fails to load.
+    This uses keyword detection and linguistic patterns to detect phishing.
     
     :param email_body: str, the email body text
     :return: dict with analysis results
@@ -93,7 +113,10 @@ def analyze_email_body_fallback(email_body):
         'bank account', 'credit card', 'social security',
         're-enter your password', 'confirm account', 'verify identity',
         'update payment method', 'confirm login', 'reset password',
-        'unauthorized access', 'account will be closed', 'security alert'
+        'unauthorized access', 'account will be closed', 'security alert',
+        'verify password', 'confirm credentials', 'reactivate account',
+        'require immediate action', 'pending review', 'recovery code',
+        'unusual sign-in activity', 'suspicious login'
     ]
     
     score = 0
@@ -102,19 +125,38 @@ def analyze_email_body_fallback(email_body):
     
     # Check for phishing keywords
     for indicator in phishing_indicators:
-        if indicator in email_lower:
-            score += 1.5
+        count = email_lower.count(indicator)
+        if count > 0:
+            score += 1.5 * count
             indicators_found += 1
     
     # Check for URL shorteners and suspicious patterns
-    if 'bit.ly' in email_lower or 'tinyurl' in email_lower or 'short.url' in email_lower:
-        score += 2
-        indicators_found += 1
+    suspicious_urls = ['bit.ly', 'tinyurl', 'short.url', 'goo.gl', '0.0']
+    for url in suspicious_urls:
+        if url in email_lower:
+            score += 2.5
+            indicators_found += 1
+            break
     
     # Check for excessive urgency
     urgent_words = email_lower.count('urgent') + email_lower.count('immediately') + email_lower.count('act now')
-    if urgent_words > 2:
-        score += 1.5
+    if urgent_words > 0:
+        score += 2 * urgent_words
+    
+    # Check for impersonal greetings (common in phishing)
+    impersonal_greetings = ['dear customer', 'dear user', 'dear member', 'dear valued']
+    for greeting in impersonal_greetings:
+        if greeting in email_lower:
+            score += 1.5
+            indicators_found += 1
+            break
+    
+    # Check for requests to confirm identity/payment (strong indicator)
+    identity_confirmations = ['confirm identity', 'confirm credentials', 'verify', 'validate']
+    for phrase in identity_confirmations:
+        if phrase in email_lower:
+            score += 2
+            break
     
     # Normalize score to 0-10
     model_score = min(score, 10)

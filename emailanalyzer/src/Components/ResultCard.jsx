@@ -26,8 +26,11 @@ const ResultCard = ({ result }) => {
   const getRiskBadge = (value) => {
     if (value < 35)
       return "bg-emerald-50 text-emerald-700 border-emerald-200";
+    return "bg-emerald-50 text-emerald-700 border-emerald-200";
     if (value < 70)
       return "bg-amber-50 text-amber-700 border-amber-200";
+    return "bg-rose-50 text-rose-700 border-rose-200";
+    return "bg-amber-50 text-amber-700 border-amber-200";
     return "bg-rose-50 text-rose-700 border-rose-200";
   };
 
@@ -74,15 +77,17 @@ const ResultCard = ({ result }) => {
 
 
   return (
-    <div className="space-y-8 lg:space-y-10">
+    <div className="space-y-10">
       {/* Section title */}
       <div className="text-center md:text-left">
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-(--muted-text) sm:text-sm">
           Risk Summary
         </p>
+
         <h3 className="mt-2 text-2xl font-semibold tracking-tight md:text-[26px]">
           Email Security Report
         </h3>
+
         <p className="mt-2 text-sm text-(--muted-text) sm:text-base">
           Quick breakdown of authenticity and risk indicators.
         </p>
@@ -246,10 +251,14 @@ const ResultCard = ({ result }) => {
             )}
           </div>
 
-          {/* Footer Note */}
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 p-3 text-[13px] text-slate-500">
-            Tip: If SPF/DKIM fails and the risk score is high, treat the email
-            as suspicious and avoid clicking links or downloading attachments.
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-sm font-semibold text-slate-700 sm:text-base md:text-[17px]">
+                Category
+              </p>
+              <span className="rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-white sm:text-xs">
+                {normalizedCategory || "unknown"}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -259,15 +268,33 @@ const ResultCard = ({ result }) => {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-400/70">
               <ShieldCheck className="h-5 w-5" />
             </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Security Tips
+
+            {/* DKIM */}
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-slate-700 sm:text-base md:text-[17px]">
+                DKIM
               </p>
-              <p className="text-sm font-semibold text-slate-900 sm:text-base">
-                Stay safe with every email
+              <span
+                className={`rounded-full border px-3 py-1 text-xs font-semibold ${getAuthBadge(
+                  dkim_status
+                )}`}
+              >
+                {dkim_status || "Unknown"}
+              </span>
+            </div>
+
+            {/* DMARC Placeholder */}
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-slate-700 sm:text-base md:text-[17px]">
+                DMARC
               </p>
+              <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600">
+                Not available
+              </span>
             </div>
           </div>
+        </div>
+      </div>
 
           <ul className="mt-3 space-y-3 text-sm text-slate-700 sm:text-[15px]">
             <li className="flex gap-3">
@@ -301,6 +328,7 @@ const ResultCard = ({ result }) => {
         </aside>
       </div>
     </div>
+
   );
 };
 
