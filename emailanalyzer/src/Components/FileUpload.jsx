@@ -62,10 +62,10 @@ const FileUpload = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`group relative flex min-h-[260px] cursor-pointer flex-col items-center justify-center rounded-3xl border border-gray-200/80 bg-white/90 p-8 text-center shadow-xl shadow-indigo-100/70 ring-1 ring-white/60 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl sm:p-10 lg:min-h-[300px] lg:p-12 ${
+        className={`group relative flex min-h-[260px] cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] sm:p-10 lg:min-h-[300px] lg:p-12 ${
           isDragging
-            ? 'border-[var(--primary-color)] bg-slate-50/80'
-            : 'hover:border-[var(--primary-color)] hover:bg-slate-50/60'
+            ? 'border-indigo-500 bg-indigo-50/80 shadow-inner'
+            : 'border-slate-300 bg-slate-50/90 hover:border-indigo-400 hover:bg-indigo-50/50 shadow-md'
         }`}
       >
 
@@ -82,11 +82,11 @@ const FileUpload = ({
           </div>
 
           <div>
-            <p className="text-xl font-semibold sm:text-2xl">
-              Drag &amp; drop your <span className="font-semibold">.eml</span>{' '}
+            <p className="text-xl font-bold text-slate-800 sm:text-2xl">
+              Drag &amp; drop your <span className="text-indigo-600">.eml</span>{' '}
               file here
             </p>
-            <p className="mt-2 text-sm text-slate-500 sm:text-base">
+            <p className="mt-2 text-sm text-slate-600 sm:text-base">
               Or click to browse. We only accept raw email files (.eml).
             </p>
           </div>
@@ -116,9 +116,9 @@ const FileUpload = ({
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <p className="text-sm text-slate-500 sm:text-[15px]">
+        <p className="text-sm text-slate-600 sm:text-[15px]">
           Make sure your email analysis server is running before you click
-          <span className="font-semibold"> Analyze Email</span>.
+          <span className="font-semibold text-slate-800"> Analyze Email</span>.
         </p>
 
         <button

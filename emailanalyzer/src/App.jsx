@@ -1,10 +1,11 @@
 import React from "react";
 import Header from "./Components/Header.jsx";
 import EmailAnalyzer from "./Pages/EmailAnalyzer.jsx";
+import CyberBackground from "./Components/CyberBackground.jsx";
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,#c7d2fe,transparent_55%),radial-gradient(circle_at_bottom_right,#fbcfe8,transparent_55%),linear-gradient(to_bottom_right,#eef2ff,#ffffff)] text-[var(--text-color)]">
+    <CyberBackground>
       <div className="flex min-h-screen flex-col">
         {/* Header section */}
         <Header />
@@ -16,20 +17,20 @@ const App = () => {
           </div>
         </main>
 
-        {/* Footer section */}
-        <footer className="border-t border-white/70 bg-[var(--card-bg)]/90 py-6 text-sm text-[var(--muted-text)] shadow-sm sm:py-8">
+        {/* Footer section - light gray contrast to dark page */}
+        <footer className="bg-slate-100/95 py-5 text-slate-600 sm:py-6">
           <div className="mx-auto flex w-full max-w-[1560px] flex-col items-center justify-between gap-3 px-4 sm:flex-row sm:px-6 lg:px-10 xl:px-12">
-            <p className="text-sm font-semibold tracking-tight sm:text-base md:text-[17px]">
+            <p className="text-sm font-semibold tracking-tight sm:text-base">
               Email Phishing Analyzer
             </p>
-            <p className="text-xs opacity-80 sm:text-sm md:text-[15px]">
+            <p className="text-xs sm:text-sm">
               For demo use only – always verify suspicious emails with your IT
               team.
             </p>
           </div>
         </footer>
       </div>
-    </div>
+    </CyberBackground>
   );
 };
 

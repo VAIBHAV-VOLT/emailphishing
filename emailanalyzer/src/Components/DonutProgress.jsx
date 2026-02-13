@@ -68,19 +68,18 @@ const DonutProgress = ({ score = 0 }) => {
         />
       </svg>
 
-      <div className="pointer-events-none absolute inset-6 flex flex-col items-center justify-center rounded-full bg-white/95 text-center shadow-inner shadow-slate-200/90">
-        <div className="relative mb-1 inline-flex items-center gap-2">
-          <span className="text-4xl font-bold tabular-nums">
-            {Math.round(normalized)}
+      <div className="pointer-events-none absolute inset-6 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner shadow-slate-200/90">
+        <div className="relative inline-flex flex-col items-center gap-0">
+          <span className="text-4xl font-bold tabular-nums text-slate-800 sm:text-5xl">
+            {Math.round(normalized)}%
           </span>
-          <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
+          <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
             RISK
           </span>
           <span
-            className={`absolute -right-2 -top-1 h-2.5 w-2.5 rounded-full ${colors.dot} shadow-sm shadow-slate-900/50`}
+            className={`absolute -right-1 -top-0.5 h-2.5 w-2.5 rounded-full ${colors.dot} shadow-sm shadow-slate-900/30`}
           />
         </div>
-
       </div>
 
     </div>
