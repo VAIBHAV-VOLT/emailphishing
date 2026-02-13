@@ -15,7 +15,10 @@ const ResultCard = ({ result }) => {
     component_scores,
   } = result;
 
-  const riskValue = Math.max(0, Math.min(100, Number(overall_score) || 0));
+  const rawScore = Number(overall_score) ?? 0;
+  const riskValue = Math.max(0, Math.min(100, rawScore <= 10 ? rawScore * 10 : rawScore));
+
+  const normalizedCategory = (risk_level || "").toString().toLowerCase();
 
   const getRiskLabel = (value) => {
     if (value < 35) return "Low Risk";
@@ -24,13 +27,8 @@ const ResultCard = ({ result }) => {
   };
 
   const getRiskBadge = (value) => {
-    if (value < 35)
-      return "bg-emerald-50 text-emerald-700 border-emerald-200";
-    return "bg-emerald-50 text-emerald-700 border-emerald-200";
-    if (value < 70)
-      return "bg-amber-50 text-amber-700 border-amber-200";
-    return "bg-rose-50 text-rose-700 border-rose-200";
-    return "bg-amber-50 text-amber-700 border-amber-200";
+    if (value < 35) return "bg-emerald-50 text-emerald-700 border-emerald-200";
+    if (value < 70) return "bg-amber-50 text-amber-700 border-amber-200";
     return "bg-rose-50 text-rose-700 border-rose-200";
   };
 
@@ -251,50 +249,31 @@ const ResultCard = ({ result }) => {
             )}
           </div>
 
-            <div className="flex items-start justify-between gap-3">
-              <p className="text-sm font-semibold text-slate-700 sm:text-base md:text-[17px]">
-                Category
-              </p>
-              <span className="rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-white sm:text-xs">
-                {normalizedCategory || "unknown"}
-              </span>
-            </div>
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-sm font-semibold text-slate-700 sm:text-base md:text-[17px]">
+              Category
+            </p>
+            <span className="rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-white sm:text-xs">
+              {normalizedCategory || "unknown"}
+            </span>
           </div>
         </div>
 
-        {/* Right Sidebar */}
+        {/* Right Sidebar - Security Tips */}
         <aside className="flex h-full flex-col gap-4 rounded-3xl border border-gray-200/80 bg-white/90 p-6 shadow-xl shadow-indigo-100/80 backdrop-blur-sm sm:p-7 lg:p-8">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-400/70">
               <ShieldCheck className="h-5 w-5" />
             </div>
-
-            {/* DKIM */}
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-slate-700 sm:text-base md:text-[17px]">
-                DKIM
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Security Tips
               </p>
-              <span
-                className={`rounded-full border px-3 py-1 text-xs font-semibold ${getAuthBadge(
-                  dkim_status
-                )}`}
-              >
-                {dkim_status || "Unknown"}
-              </span>
-            </div>
-
-            {/* DMARC Placeholder */}
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-slate-700 sm:text-base md:text-[17px]">
-                DMARC
+              <p className="text-sm font-semibold text-slate-900 sm:text-base">
+                Stay safe with every email
               </p>
-              <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600">
-                Not available
-              </span>
             </div>
           </div>
-        </div>
-      </div>
 
           <ul className="mt-3 space-y-3 text-sm text-slate-700 sm:text-[15px]">
             <li className="flex gap-3">
