@@ -56,7 +56,6 @@ def analyze_email_route():
             if result:
                 # Return result JSON with all component scores
                 from phishingtool.attachment_analyzer import analyze_eml
-                
                 response = {
                     'status': 'success',
                     'data': {
@@ -70,7 +69,7 @@ def analyze_email_route():
                         'originating_ip': result['originating_ip'],
                         'component_scores': result.get('component_scores', {}),
                         'details': result.get('details', {}),
-                        'attachments': analyze_eml(file)
+                        'attachments':analyze_eml(file)
                     }
                 }
 
@@ -105,7 +104,6 @@ def health():
             'Metadata', 'IP Analysis', 'URL Security', 'Transformer'
         ]
     }), 200
-
 
 if __name__ == "__main__":
     print("🚀 Starting Email Phishing Analyzer Web Server")
